@@ -1,0 +1,1675 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>اتاق شورا</title>
+<!-- فونت‌ها از اینترنت میان؛ اگه آفلاین باشید صفحه با فونت Tahoma نشون داده می‌شه و همه‌چیز کار می‌کنه. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700;800&family=Lalezar&display=swap">
+<style>
+/* Layout: one chamber card (portraits + live caption) leads; options sit under it; minutes run alongside. Reel mode reflows the same parts into a 9:16 frame. Single deliberate dark look. */
+:root{
+  --bg:#080f1c;
+  --panel:#0f1a2d;
+  --panel-2:#142339;
+  --line:#1f3352;
+  --fg:#eaf0fa;
+  --muted:#8b9dbb;
+  --accent:#4bc4ff;
+  --gold:#f2c46b;
+  --yes:#5bd49b;
+  --amend:#f1b45a;
+  --no:#ff7d7d;
+  --font-body:"Vazirmatn",Tahoma,"Segoe UI",sans-serif;
+  --font-display:"Lalezar","Vazirmatn",Tahoma,sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{background:var(--bg);color:var(--fg)}
+body{font-family:var(--font-body);direction:rtl;font-size:14px;line-height:1.75;padding-inline:16px;padding-block:0 100px}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1300px;margin-inline:auto}
+img{display:block}
+
+/* ---------- header ---------- */
+header.top{display:flex;flex-wrap:wrap;align-items:center;gap:12px 22px;padding-block:18px 14px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-mark{width:36px;height:36px;border-radius:11px;background:var(--panel-2);border:1px solid var(--line);display:grid;place-items:center}
+.brand h1{font-family:var(--font-display);font-weight:400;font-size:25px;margin:0;line-height:1.1}
+.brand small{display:block;color:var(--muted);font-size:12px;line-height:1.4}
+ol.steps{list-style:none;display:flex;flex-wrap:wrap;gap:4px;margin:0;padding:4px;margin-inline-start:auto;background:var(--panel);border:1px solid var(--line);border-radius:999px}
+ol.steps button{border:0;background:transparent;border-radius:999px;padding:4px 12px;color:var(--muted);font-size:12.5px;display:flex;align-items:center;gap:6px}
+ol.steps button::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--line)}
+ol.steps button.done{color:var(--fg)}
+ol.steps button.done::before{background:var(--accent)}
+ol.steps button.active{background:var(--panel-2);color:var(--fg)}
+ol.steps button.active::before{background:var(--gold);box-shadow:0 0 0 3px rgba(242,196,107,.2)}
+.top-actions{display:flex;gap:8px}
+.btn{border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:6px 14px;font-size:13px;white-space:nowrap}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#03121d;font-weight:800}
+.btn.gold{border-color:rgba(242,196,107,.5);color:var(--gold)}
+.btn.sel{appearance:none;-webkit-appearance:none;padding-inline:14px 30px;background:var(--panel) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238b9dbb' stroke-width='1.5' fill='none'/%3E%3C/svg%3E") no-repeat left 12px center;color:var(--fg);font:inherit;font-size:13px;max-width:200px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+@media (max-width:640px){.top-actions{flex-wrap:wrap}}
+
+/* ---------- grid ---------- */
+main.grid{display:grid;grid-template-columns:minmax(0,1fr) 370px;gap:16px;align-items:start}
+@media (max-width:980px){main.grid{grid-template-columns:minmax(0,1fr)}}
+.col{display:flex;flex-direction:column;gap:14px;min-width:0;position:relative}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:16px 18px;min-width:0}
+.eyebrow{font-size:11.5px;color:var(--muted);letter-spacing:.04em;margin:0 0 4px;font-weight:700}
+.qcard{display:flex;gap:14px;align-items:flex-start}
+.qcard .qmark{flex:none;width:36px;height:36px;border-radius:10px;background:rgba(75,196,255,.12);color:var(--accent);display:grid;place-items:center;font-weight:800;font-size:18px}
+.question{font-size:18px;font-weight:800;margin:0;text-wrap:balance;line-height:1.65}
+
+/* ---------- chamber ---------- */
+.chamber{position:relative;border-radius:22px;border:1px solid var(--line);overflow:hidden;padding:26px 14px 16px;
+  background:
+    radial-gradient(70% 60% at 50% 0%,rgba(75,196,255,.16),transparent 70%),
+    radial-gradient(60% 50% at 50% 100%,rgba(242,196,107,.07),transparent 70%),
+    linear-gradient(180deg,#0f1f38,#0a1426)}
+.chamber .arc{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.seats{position:relative;z-index:1;display:flex;justify-content:center;gap:14px clamp(6px,1.8vw,22px)}
+/* more than six advisors: smaller seats, and they wrap onto a second row */
+.seats.many{flex-wrap:wrap}
+.seats.many .seat{width:clamp(56px,9.5vw,110px)}
+.seat{display:flex;flex-direction:column;align-items:center;gap:6px;width:clamp(62px,12.5vw,128px);transform:translateY(var(--lift,0px));transition:transform .4s ease,opacity .4s ease}
+.portrait{position:relative;width:100%;aspect-ratio:1;border-radius:50%;padding:3px;background:linear-gradient(160deg,#2b4670,#16263f)}
+.portrait .ph{width:100%;height:100%;border-radius:50%;overflow:hidden;background:radial-gradient(circle at 50% 35%,var(--c1),var(--c2))}
+.av{width:100%;height:100%;display:block}
+.av .bodyg{animation:breathe 4.6s ease-in-out infinite;animation-delay:var(--bd,0s);transform-box:view-box;transform-origin:60px 120px}
+@keyframes breathe{0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.025)}}
+.av .headg{transform-box:view-box;transform-origin:60px 96px;transition:transform .45s cubic-bezier(.3,1.4,.5,1)}
+.av .pupil{transition:transform .35s ease}
+.av .brows{transition:transform .3s ease}
+.av .lid{transform-box:fill-box;transform-origin:50% 0;transform:scaleY(0);animation:blinkLid var(--blink,4.8s) infinite;animation-delay:var(--bd,0s)}
+@keyframes blinkLid{0%,94%,100%{transform:scaleY(0)}97%{transform:scaleY(1)}}
+.av .m-open{display:none}
+.seat.mouth-open .av .m-open{display:inline}
+.seat.mouth-open .av .m-closed{display:none}
+.seat.gaze-l .av .pupil{transform:translateX(-2.8px)}
+.seat.gaze-r .av .pupil{transform:translateX(2.8px)}
+.seat.gaze-l .av .headg{transform:rotate(-5deg) translateX(-1px)}
+.seat.gaze-r .av .headg{transform:rotate(5deg) translateX(1px)}
+.seat.react .av .brows{transform:translateY(-3px)}
+.seat.talking .av .headg{animation:bob .32s ease-in-out infinite alternate}
+.seat.talking .av .brows{animation:brow .6s ease-in-out infinite alternate}
+@keyframes bob{from{transform:rotate(-1.5deg) translateY(0)}to{transform:rotate(1.5deg) translateY(-1.5px)}}
+@keyframes brow{to{transform:translateY(-2.5px)}}
+.chip.show{animation:chipPop .35s cubic-bezier(.3,1.6,.5,1)}
+@keyframes chipPop{from{transform:scale(.6);opacity:0}to{transform:none;opacity:1}}
+.seat.speaking{transform:translateY(calc(var(--lift,0px) - 8px))}
+.seat.speaking .portrait{background:linear-gradient(160deg,var(--gold),#b98a35);box-shadow:0 0 0 4px rgba(242,196,107,.18),0 12px 34px rgba(242,196,107,.25)}
+.chamber.live .seat:not(.speaking){opacity:.78}
+.wave{position:absolute;bottom:-4px;left:50%;translate:-50% 0;display:flex;gap:2px;align-items:flex-end;height:14px;padding:2px 6px;border-radius:999px;background:var(--gold);opacity:0;transition:opacity .2s}
+.wave i{width:3px;height:4px;border-radius:2px;background:#2a1c00;animation:wave .5s ease-in-out infinite alternate}
+.wave i:nth-child(2){animation-delay:.12s}.wave i:nth-child(3){animation-delay:.24s}.wave i:nth-child(4){animation-delay:.08s}
+@keyframes wave{to{height:10px}}
+.seat.talking .wave{opacity:1}
+.typing{position:absolute;top:2px;inset-inline-start:-2px;background:var(--panel-2);border:1px solid var(--line);border-radius:999px;padding:3px 7px;display:flex;gap:3px;opacity:0;transform:translateY(4px);transition:.25s}
+.typing i{width:5px;height:5px;border-radius:50%;background:var(--accent);animation:blink 1s infinite}
+.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+.seat.typing-on .typing{opacity:1;transform:none}
+@keyframes blink{0%,100%{opacity:.25}50%{opacity:1}}
+.plate{text-align:center;max-width:100%;line-height:1.35}
+.plate b{display:block;font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.plate span{display:block;font-size:10.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chip{font-size:10.5px;font-weight:800;border-radius:999px;padding:0 8px;border:1px solid currentColor;line-height:1.7;white-space:nowrap;visibility:hidden}
+.chip.show{visibility:visible}
+.chip.yes{color:var(--yes)}.chip.yes_if{color:var(--accent)}.chip.amend{color:var(--amend)}.chip.no{color:var(--no)}
+
+.caption{position:relative;z-index:1;margin:18px auto 0;max-width:720px;display:flex;gap:12px;align-items:flex-start;background:rgba(8,15,28,.72);border:1px solid var(--line);border-radius:16px;padding:12px 14px;min-height:98px;backdrop-filter:blur(8px)}
+.caption .cav{flex:none;width:44px;height:44px;border-radius:50%;overflow:hidden;background:var(--panel-2);display:grid;place-items:center}
+.caption .cav .mini{width:100%;height:100%}
+.caption .cbody{min-width:0;flex:1}
+.who{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 8px;font-size:12px;color:var(--muted)}
+.who b{color:var(--gold);font-size:13.5px}
+.who .to{color:var(--accent)}
+.caption p{margin:2px 0 0;font-size:15.5px;line-height:1.85;min-height:2em}
+.caret{display:inline-block;width:2px;height:1em;background:var(--accent);vertical-align:-2px;margin-inline-start:2px;animation:blink .8s infinite}
+
+/* ---------- options ---------- */
+.options{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:10px}
+.opt{display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:6px 10px;align-items:center;background:var(--panel-2);border:1px solid var(--line);border-radius:14px;padding:10px 12px;transition:border-color .4s,background .4s}
+.opt .letter{width:30px;height:30px;border-radius:9px;background:var(--panel);border:1px solid var(--line);display:grid;place-items:center;font-weight:800;font-size:13px;direction:ltr}
+.opt .otext{font-size:13px;line-height:1.6;min-width:0}
+.opt .score{font-weight:800;font-variant-numeric:tabular-nums;color:var(--muted);font-size:15px}
+.opt .bar{grid-column:1/-1;height:5px;border-radius:5px;background:var(--panel);overflow:hidden}
+.opt .bar i{display:block;height:100%;width:0;background:var(--accent);border-radius:5px;transition:width .8s ease}
+.opt.win{border-color:rgba(242,196,107,.6);background:linear-gradient(180deg,rgba(242,196,107,.1),transparent),var(--panel-2)}
+.opt.win .letter{background:var(--gold);color:#2a1c00;border-color:var(--gold)}
+.opt.win .bar i{background:var(--gold)}
+.opt.win .score{color:var(--gold)}
+
+/* ---------- verdict ---------- */
+.verdict{border-color:rgba(242,196,107,.45);background:linear-gradient(180deg,rgba(242,196,107,.09),transparent 55%),var(--panel)}
+.verdict h2{font-family:var(--font-display);font-weight:400;font-size:30px;margin:0;color:var(--gold);line-height:1.35;text-wrap:balance}
+.verdict .sum{margin:6px 0 14px;font-size:14.5px}
+.vgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:10px;margin-bottom:14px}
+.vbox{background:var(--panel-2);border:1px solid var(--line);border-radius:12px;padding:10px 12px;min-width:0}
+.vbox h3{margin:0 0 3px;font-size:12px;color:var(--muted)}
+.vbox p{margin:0;font-size:13.5px}
+.reasons{display:grid;gap:8px;margin:0 0 14px;padding:0;list-style:none}
+.reasons li{display:flex;gap:10px;align-items:flex-start;font-size:13.5px}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+table{border-collapse:collapse;width:100%;min-width:520px;font-size:13px;font-variant-numeric:tabular-nums}
+th,td{padding:7px 10px;text-align:center;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-weight:700;font-size:12px;background:var(--panel-2)}
+td:first-child,th:first-child{text-align:right}
+tr:last-child td{border-bottom:0}
+td.hi{color:var(--gold);font-weight:800}
+.vactions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+
+/* ---------- minutes ---------- */
+.minutes{position:sticky;top:12px;display:flex;flex-direction:column;max-height:calc(100vh - 124px);padding:0;overflow:hidden}
+@media (max-width:980px){.minutes{position:static;max-height:560px}}
+.mhead{padding:14px 16px 10px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.mhead h2{margin:0;font-size:14px}
+.mhead span{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.mlist{overflow-y:auto;padding:12px 14px 16px;display:grid;gap:9px;align-content:start;flex:1}
+.mstage{font-size:11.5px;font-weight:800;color:var(--gold);margin-top:6px}
+.entry{background:var(--panel-2);border:1px solid var(--line);border-radius:12px;padding:9px 11px;animation:pop .3s ease}
+.entry.chair{background:transparent;border-style:dashed}
+.eh{display:flex;align-items:center;gap:8px;margin-bottom:2px}
+.eh b{font-size:12.5px}
+.eh .tag{margin-inline-start:auto;font-size:11px;color:var(--muted);white-space:nowrap}
+.tag.yes{color:var(--yes)}.tag.yes_if{color:var(--accent)}.tag.amend{color:var(--amend)}.tag.no{color:var(--no)}
+.entry p{margin:0;font-size:13px;line-height:1.8}
+.mini{width:26px;height:26px;border-radius:50%;overflow:hidden;background:var(--panel);flex:none;display:grid;place-items:center}
+.mini svg{width:100%;height:100%;display:block}
+@keyframes pop{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.empty{color:var(--muted);font-size:13px;padding:6px 2px;margin:0}
+
+/* ---------- playbar ---------- */
+.playbar{position:fixed;inset-inline:0;bottom:0;z-index:5;padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));background:rgba(8,15,28,.92);border-top:1px solid var(--line);backdrop-filter:blur(8px)}
+.playbar .in{max-width:1300px;margin-inline:auto;display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px}
+.play{width:44px;height:44px;border-radius:50%;border:0;background:var(--accent);color:#03121d;display:grid;place-items:center;flex:none}
+.play svg{width:18px;height:18px}
+.count{font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.speeds{display:flex;gap:4px;margin-inline-start:auto}
+.speeds button{border:1px solid var(--line);background:transparent;border-radius:999px;padding:3px 10px;font-size:12px;color:var(--muted);direction:ltr}
+.speeds button.on{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.progress{flex-basis:100%;height:3px;background:var(--panel-2);border-radius:3px;overflow:hidden;order:-1}
+.progress i{display:block;height:100%;width:0;background:var(--accent);transition:width .4s}
+.note{font-size:11.5px;color:var(--muted);text-align:center;margin:18px 0 0}
+
+/* ---------- new session sheet ---------- */
+.sheet-bg{position:fixed;inset:0;z-index:20;background:rgba(3,7,14,.72);display:grid;place-items:center;padding:16px}
+.sheet{width:min(720px,100%);max-height:calc(100vh - 32px);overflow-y:auto;background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:20px}
+.sheet h2{margin:0 0 4px;font-size:18px}
+.sheet .sub{margin:0 0 14px;color:var(--muted);font-size:13px}
+.field{display:grid;gap:4px;margin-bottom:12px}
+.field>label,.field>.lbl{font-size:12.5px;font-weight:700}
+.hint{font-size:11.5px;color:var(--muted)}
+textarea,input[type=text]{width:100%;background:var(--panel-2);border:1px solid var(--line);border-radius:10px;color:var(--fg);font:inherit;font-size:13.5px;padding:8px 10px;resize:vertical}
+.optinputs{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:8px}
+.oi{display:flex;gap:8px;align-items:center}
+.oi span{font-weight:800;width:18px;text-align:center}
+.picks{display:flex;flex-wrap:wrap;gap:8px}
+.pick{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:999px;padding:3px 12px 3px 4px;font-size:12.5px;cursor:pointer;background:var(--panel-2)}
+.pick input{accent-color:var(--accent)}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:6px}
+.status{font-size:13px;color:var(--muted);min-height:1.5em}
+.status.err{color:var(--no)}
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid var(--line);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;vertical-align:-2px;margin-inline-end:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ---------- reel mode (9:16 for screen recording) ---------- */
+.reel-exit{display:none}
+body.reel{padding:0;overflow:hidden;height:100vh}
+body.reel header.top,body.reel .minutes,body.reel .note,body.reel .playbar{display:none}
+body.reel .wrap{max-width:none}
+body.reel main.grid{display:block}
+body.reel .col{width:min(100vw,calc(100vh * 9 / 16));height:100vh;margin-inline:auto;padding:22px 16px 18px;gap:12px;background:
+  radial-gradient(90% 40% at 50% 0%,rgba(75,196,255,.16),transparent 70%),linear-gradient(180deg,#0c1a31,#080f1c)}
+body.reel .qcard{order:0;background:transparent;border:0;padding:4px 2px}
+body.reel .question{font-size:clamp(17px,2.6vh,22px)}
+body.reel .chamber{order:1;flex:1;border:0;background:transparent;padding:6px 0 0;display:flex;flex-direction:column;overflow:visible}
+body.reel .chamber .arc{display:none}
+body.reel .seats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px 10px;justify-items:center}
+body.reel .seat{width:min(100%,15vh);--lift:0px!important;transform:none}
+body.reel .seat.speaking{transform:translateY(-4px)}
+body.reel .plate b{font-size:clamp(12px,1.6vh,14px)}
+body.reel .caption{margin-top:8px;max-width:none;min-height:clamp(120px,17vh,170px);padding:14px 16px}
+.feed{display:none}
+body.reel .feed{display:flex;flex-direction:column;justify-content:flex-end;gap:6px;margin-top:auto;padding-top:12px;min-height:0}
+.fi{display:flex;gap:8px;align-items:flex-start;background:rgba(15,26,45,.75);border:1px solid var(--line);border-radius:12px;padding:6px 10px;animation:feedIn .4s ease}
+.fi:first-child:not(:last-child){opacity:.55}
+.fi:last-child{opacity:.85}
+.fi .mini{width:24px;height:24px}
+.fi div{min-width:0}
+.fi b{font-size:clamp(11px,1.45vh,13px);color:var(--gold)}
+.fi p{margin:0;font-size:clamp(12px,1.6vh,14px);line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+@keyframes feedIn{from{opacity:0;transform:translateY(14px)}}
+body.reel .verdict{animation:slideUp .55s cubic-bezier(.2,1,.3,1)}
+@keyframes slideUp{from{transform:translateY(60px);opacity:0}}
+/* reel sizes are tied to the window height so the frame looks the same at any size or browser zoom */
+html body.reel .col{padding:2.2vh 1.7vh 1.8vh;gap:1.2vh}
+html body.reel .qcard{gap:1.2vh}
+html body.reel .qcard .qmark{width:3.6vh;height:3.6vh;font-size:1.9vh;border-radius:1vh}
+html body.reel .eyebrow{font-size:1.2vh}
+html body.reel .question{font-size:2.35vh}
+html body.reel .seats{gap:1.6vh 1vh}
+html body.reel .plate b{font-size:1.5vh}
+html body.reel .plate span{font-size:1.15vh;display:block}
+html body.reel .chip{font-size:1.15vh;padding:0 .9vh}
+html body.reel .wave{height:1.5vh}
+html body.reel .caption{min-height:16vh;padding:1.5vh 1.7vh;gap:1.2vh;border-radius:1.6vh}
+html body.reel .caption .cav{width:5.2vh;height:5.2vh}
+html body.reel .who{font-size:1.3vh}
+html body.reel .who b{font-size:1.5vh}
+html body.reel .caption p{font-size:2.2vh}
+html body.reel .fi{padding:.7vh 1vh;gap:.8vh;border-radius:1.2vh}
+html body.reel .fi .mini{width:2.5vh;height:2.5vh}
+html body.reel .fi b{font-size:1.25vh}
+html body.reel .fi p{font-size:1.5vh}
+html body.reel #optionsCard{padding:1vh 1.2vh;border-radius:1.6vh}
+html body.reel .options{gap:.6vh}
+html body.reel .opt{padding:.6vh .9vh;gap:.4vh .8vh;grid-template-columns:2.5vh minmax(0,1fr) auto;border-radius:1.2vh}
+html body.reel .opt .letter{width:2.5vh;height:2.5vh;font-size:1.25vh;border-radius:.7vh}
+html body.reel .opt .otext{font-size:1.2vh}
+html body.reel .opt .score{font-size:1.4vh}
+html body.reel .opt .bar{height:.5vh}
+html body.reel .verdict{inset-inline:1.7vh;bottom:1.8vh;padding:1.8vh 2vh;border-radius:1.8vh}
+html body.reel .verdict h2{font-size:3.6vh}
+html body.reel .verdict .sum,html body.reel .vbox p{font-size:1.5vh}
+html body.reel .vbox h3{font-size:1.25vh}
+html body.reel .vgrid{gap:1vh;margin-bottom:0}
+html body.reel .start-hint span{font-size:1.6vh;padding:.9vh 2vh}
+html body.reel .seats.many .seat{width:min(100%,11vh)}
+body.reel .caption p{font-size:clamp(16px,2.35vh,21px);font-weight:500}
+body.reel .caption .cav{width:52px;height:52px}
+body.reel #optionsCard{order:2;padding:10px 12px}
+body.reel #optionsCard .eyebrow{display:none}
+body.reel .options{grid-template-columns:1fr 1fr;gap:6px}
+body.reel .opt{padding:6px 9px;gap:4px 8px;grid-template-columns:24px minmax(0,1fr) auto}
+body.reel .opt .letter{width:24px;height:24px;font-size:12px;border-radius:7px}
+body.reel .opt .otext{font-size:11.5px;line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+body.reel .opt .score{font-size:13px}
+body.reel .verdict{position:absolute;inset-inline:16px;bottom:18px;z-index:4;box-shadow:0 -20px 60px rgba(0,0,0,.6)}
+body.reel .verdict .reasons,body.reel .verdict .tablewrap,body.reel .verdict .vactions,body.reel .verdict .vbox.watch{display:none}
+body.reel .verdict h2{font-size:clamp(26px,4vh,36px)}
+body.reel .reel-exit{display:flex;position:fixed;top:10px;inset-inline-start:10px;z-index:30;gap:6px;opacity:.15;transition:opacity .2s}
+body.reel .reel-exit:hover,body.reel .reel-exit:focus-within{opacity:1}
+body.reel .start-hint{display:grid}
+.start-hint{display:none;position:fixed;inset:0;z-index:25;place-items:center;pointer-events:none}
+.start-hint span{background:rgba(8,15,28,.85);border:1px solid var(--line);border-radius:999px;padding:8px 18px;font-size:13px;color:var(--muted)}
+body.reel.playing .start-hint,body.reel.started .start-hint{display:none}
+
+/* ---------- import sheet & "works inside Claude" notice ---------- */
+.notice{background:rgba(75,196,255,.08);border:1px solid rgba(75,196,255,.35);border-radius:14px;padding:12px 14px;margin:0 0 14px;font-size:13px;line-height:1.9}
+.notice b{color:var(--accent)}
+.notice .row{margin-top:8px}
+textarea.code{direction:ltr;text-align:left;font-family:Consolas,"Courier New",monospace;font-size:12.5px;line-height:1.6;min-height:220px}
+.filepick{position:relative;overflow:hidden}
+.filepick input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.steps-help{margin:0 0 12px;padding-inline-start:20px;font-size:13px;color:var(--muted)}
+.steps-help li{margin-bottom:2px}
+
+@media (max-width:560px){
+  .question{font-size:16px}
+  .caption p{font-size:14.5px}
+  .plate span{display:none}
+  .verdict h2{font-size:24px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f2c46b" stroke-width="1.8" stroke-linecap="round"><path d="M12 3v18M5 7h14M5 7l-3 6a3 3 0 0 0 6 0zM19 7l-3 6a3 3 0 0 0 6 0zM8 21h8"/></svg>
+      </div>
+      <div><h1>اتاق شورا</h1><small id="sessionTitle">در حال آماده‌سازی جلسه…</small></div>
+    </div>
+    <ol class="steps" id="steps" aria-label="مراحل جلسه"></ol>
+    <div class="top-actions">
+      <label class="sr" for="sampleSel">جلسهٔ نمونه</label>
+      <select class="btn sel" id="sampleSel"></select>
+      <button class="btn gold" id="reelBtn" type="button">حالت ریل</button>
+      <button class="btn" id="importBtn" type="button">وارد کردن جلسه</button>
+      <button class="btn primary" id="newBtn" type="button">جلسهٔ جدید</button>
+    </div>
+  </header>
+
+  <main class="grid">
+    <div class="col" id="col">
+      <section class="card qcard">
+        <span class="qmark" aria-hidden="true">؟</span>
+        <div><p class="eyebrow">سؤال جلسه</p><p class="question" id="question"></p></div>
+      </section>
+
+      <section class="chamber" id="chamber" aria-label="میز شورا">
+        <svg class="arc" id="arc" aria-hidden="true"></svg>
+        <div class="seats" id="seats"></div>
+        <div class="feed" id="feed" aria-hidden="true"></div>
+        <div class="caption" aria-live="polite">
+          <div class="cav" id="cav"></div>
+          <div class="cbody">
+            <div class="who" id="who"><b>رئیس جلسه</b><span>آمادهٔ شروع</span></div>
+            <p id="speechText">مشاورها دور میز نشستن. «شروع جلسه» رو بزنید تا پرونده رو بررسی کنن.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="card" id="optionsCard">
+        <p class="eyebrow">گزینه‌ها و امتیاز وزنی شورا</p>
+        <div class="options" id="options"></div>
+      </section>
+
+      <section class="card verdict" id="verdict" hidden></section>
+    </div>
+
+    <aside class="card minutes" aria-label="صورت‌جلسه">
+      <div class="mhead"><h2>صورت‌جلسه</h2><span id="minutesCount"></span></div>
+      <div class="mlist" id="mlist"><p class="empty">هنوز کسی حرف نزده.</p></div>
+    </aside>
+  </main>
+
+  <p class="note">مشاورها شخصیت‌های خیالی‌ان و نظر واقعی هیچ آدمی نیستن. تصمیم آخر با خودتونه.</p>
+</div>
+
+<div class="reel-exit">
+  <button class="btn" id="reelPlay" type="button">پخش / توقف</button>
+  <button class="btn" id="reelRestart" type="button">از اول</button>
+  <button class="btn" id="reelExit" type="button">خروج از حالت ریل</button>
+</div>
+<div class="start-hint" id="startHint"><span>برای شروع، کلید Space رو بزنید</span></div>
+
+<div class="playbar">
+  <div class="in">
+    <div class="progress"><i id="prog"></i></div>
+    <button class="play" id="playBtn" type="button" aria-label="شروع جلسه"></button>
+    <button class="btn" id="restartBtn" type="button">از اول</button>
+    <button class="btn" id="skipBtn" type="button">پرش به رأی نهایی</button>
+    <span class="count" id="count"></span>
+    <div class="speeds" id="speeds" role="group" aria-label="سرعت پخش"></div>
+  </div>
+</div>
+
+<div class="sheet-bg" id="sheetBg" hidden>
+  <form class="sheet" id="sheet" novalidate>
+    <h2>تشکیل جلسهٔ جدید</h2>
+    <div class="notice" id="noClaude" hidden>
+      <b>ساختن جلسه از همین صفحه فقط داخل Claude کار می‌کنه</b> (وقتی این صفحه به‌صورت آرتیفکت توی Claude باز شده باشه).
+      اینجا که فایل رو مستقیم باز کردید، راهش اینه: سؤالتون رو به هوش مصنوعی خودتون بدید (همون که فایل دستورالعمل شورا رو بهش دادید)، کد JSON آخر جوابش رو کپی کنید و با دکمهٔ «وارد کردن جلسه» اینجا بچسبونید.
+      اگه فرم پایین رو پر کنید، دکمهٔ «کپی دستور برای هوش مصنوعی» یه متن آماده می‌سازه که می‌تونید توی هر چتی بچسبونید.
+      <div class="row"><button class="btn" id="goImport" type="button">رفتن به «وارد کردن جلسه»</button></div>
+    </div>
+    <p class="sub">سؤالتون رو بنویسید و کسب‌وکارتون رو معرفی کنید. شورا گزینه‌ها رو بررسی می‌کنه، بحث می‌کنن و رأی می‌دن. ساختنش حدود یک دقیقه طول می‌کشه.</p>
+    <div class="field">
+      <label for="fQuestion">سؤال</label>
+      <textarea id="fQuestion" rows="2"></textarea>
+    </div>
+    <div class="field">
+      <label for="fCard">کارت معرفی کسب‌وکار</label>
+      <textarea id="fCard" rows="5"></textarea>
+      <span class="hint">چی می‌فروشید، به کی، با چه قیمتی، عددهای فعلی، بزرگ‌ترین مشکل و بودجه.</span>
+    </div>
+    <div class="field">
+      <span class="lbl">گزینه‌ها</span>
+      <div class="optinputs">
+        <div class="oi"><span>A</span><input type="text" id="fOptA" aria-label="گزینهٔ A"></div>
+        <div class="oi"><span>B</span><input type="text" id="fOptB" aria-label="گزینهٔ B"></div>
+        <div class="oi"><span>C</span><input type="text" id="fOptC" aria-label="گزینهٔ C"></div>
+        <div class="oi"><span>D</span><input type="text" id="fOptD" aria-label="گزینهٔ D"></div>
+      </div>
+      <span class="hint">اگه خالی بذارید، خود شورا ۳ یا ۴ گزینه پیشنهاد می‌ده.</span>
+    </div>
+    <div class="field">
+      <span class="lbl">اعضای شورا (حداقل ۳ نفر)</span>
+      <div class="picks" id="fPicks"></div>
+    </div>
+    <p class="status" id="fStatus" aria-live="polite"></p>
+    <textarea id="fPromptOut" rows="6" readonly hidden aria-label="دستور آماده برای هوش مصنوعی"></textarea>
+    <div class="row">
+      <button class="btn primary" id="fGo" type="submit">تشکیل جلسه</button>
+      <button class="btn" id="fCopy" type="button" hidden>کپی دستور برای هوش مصنوعی</button>
+      <button class="btn" id="fStop" type="button" hidden>توقف</button>
+      <button class="btn" id="fClose" type="button">بستن</button>
+    </div>
+  </form>
+</div>
+
+<div class="sheet-bg" id="importBg" hidden>
+  <div class="sheet" role="dialog" aria-labelledby="importTitle">
+    <h2 id="importTitle">وارد کردن جلسه</h2>
+    <p class="sub">جلسه‌ای که هوش مصنوعی‌تون ساخته رو اینجا بیارید تا مشاورها همین‌جا اجراش کنن.</p>
+    <ol class="steps-help">
+      <li>توی جواب هوش مصنوعی، بلوک کدی رو که با <code dir="ltr">{</code> شروع می‌شه و با <code dir="ltr">}</code> تموم می‌شه کامل کپی کنید.</li>
+      <li>اینجا بچسبونید (اگه خطوط ``` یا متن اضافه هم کپی شد اشکالی نداره).</li>
+      <li>«بارگذاری و پخش» رو بزنید.</li>
+    </ol>
+    <div class="field">
+      <label for="importText">متن JSON جلسه</label>
+      <textarea id="importText" class="code" rows="10" spellcheck="false" placeholder='{ "title": "...", "question": "...", "options": [ ... ], ... }'></textarea>
+    </div>
+    <p class="status" id="importStatus" aria-live="polite"></p>
+    <div class="row">
+      <button class="btn primary" id="importGo" type="button">بارگذاری و پخش</button>
+      <span class="btn filepick">باز کردن فایل ‎.json<input type="file" id="importFile" accept=".json,.txt,application/json,text/plain" aria-label="باز کردن فایل جلسه"></span>
+      <button class="btn" id="importClose" type="button">بستن</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ==========================================================================
+   راهنمای شخصی‌سازی «اتاق شورا» (برای شما یا هوش مصنوعی‌تون)
+   --------------------------------------------------------------------------
+   این صفحه یه فایل تکیه؛ با دابل‌کلیک باز می‌شه و بدون اینترنت هم کار می‌کنه.
+
+   ۱) مشاورها ← دنبال «const PERSONAS» بگردید.
+      هر مشاور یه شناسهٔ انگلیسی کوتاه داره (مثل nima) و این بخش‌ها:
+        name   اسمی که زیر عکسش نوشته می‌شه
+        role   نقشش (مثلاً «مدیر مالی»)
+        lens   زاویهٔ دیدش؛ وقتی جلسه داخل Claude ساخته می‌شه به هوش مصنوعی داده می‌شه
+        weight وزن رأیش (۱ تا ۳ معمولیه)؛ رأی نهایی میانگین وزنی امتیازهاست
+        look   ظاهر کارتونی‌اش:
+               bg      دو رنگ پس‌زمینهٔ دایره
+               skin    رنگ پوست
+               hair    "short" یا "bald" (برای آقایون) ... یا به‌جاش:
+               hijab   رنگ روسری، همراه fringe: "straight" / "side" / "curly"
+               hairC   رنگ مو      beard: "full" یا "stubble"     beardC: رنگ ریش
+               mustache: true      glasses: رنگ قاب عینک
+               outfit  "overshirt" / "blazer" / "vest" / "suit" / "blouse" / "sweater"
+               shirt   رنگ لباس    inner: رنگ لباس زیرین (یقه)
+      بعد از اضافه کردن مشاور، شناسه‌اش رو به «const ORDER» هم اضافه کنید.
+      تعداد مشاورها می‌تونه بیشتر از شش تا بشه؛ صندلی‌ها خودشون کوچیک‌تر می‌شن
+      و می‌رن ردیف دوم.
+      راه بی‌کد: فایل JSON جلسه می‌تونه یه بخش "personas" داشته باشه و مشاور
+      تازه یا وزن تازه رو همون‌جا تعریف کنه (توضیحش توی فایل دستورالعمل هست).
+
+   ۲) رنگ‌ها ← بالای فایل، داخل <style>، بخش «:root».
+      --bg پس‌زمینه، --panel کارت‌ها، --accent رنگ اصلی (آبی)، --gold طلایی،
+      --yes / --amend / --no رنگ موافق / اصلاحیه / مخالف.
+      فونت‌ها هم همون‌جان: --font-body و --font-display.
+
+   ۳) سرعت‌ها ← دنبال «const SPEEDS» و «const TIMING» بگردید.
+      SPEEDS دکمه‌های سرعت پایین صفحه‌ست (۱x، ۱٫۶x، ۲٫۵x).
+      TIMING.base مکث ثابت هر خط (میلی‌ثانیه) و TIMING.perChar زمان هر حرفه؛
+      عدد کمتر یعنی جلسه تندتر پیش می‌ره.
+
+   ۴) جلسه‌های نمونه ← دنبال «const SAMPLES» بگردید. هر جلسهٔ JSON رو می‌شه
+      اونجا اضافه کرد تا توی منوی نمونه‌ها بیاد.
+
+   ۵) ساختار JSON جلسه رو عوض نکنید؛ دکمهٔ «وارد کردن جلسه» و فایل
+      دستورالعمل شورا به همین ساختار وابسته‌ان. اضافه کردن فیلد اختیاری اشکالی نداره.
+   ========================================================================== */
+(function(){
+"use strict";
+
+const $ = id => document.getElementById(id);
+const FA = "۰۱۲۳۴۵۶۷۸۹";
+const fa = v => String(v).replace(/\d/g, d => FA[d]).replace(/\./g, "٫");
+const el = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; };
+const reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+const STANCE = { yes: "موافق", yes_if: "موافق، اگر…", amend: "اصلاحیه", no: "مخالف" };
+const STAGES = [
+  { key: "brief", label: "خلاصهٔ پرونده", head: "خلاصهٔ پرونده" },
+  { key: "openings", label: "موضع‌ها", head: "دور ۱: موضع‌ها" },
+  { key: "fault", label: "نقاط اختلاف", head: "رئیس: پیدا کردن نقاط اختلاف" },
+  { key: "debate", label: "مناظره", head: "دور ۲: مناظره" },
+  { key: "vote", label: "رأی‌گیری", head: "رأی‌گیری" },
+  { key: "verdict", label: "رأی نهایی", head: "رأی نهایی" }
+];
+
+const PERSONAS = {
+  nima:  { name: "نیما", role: "بازاریاب رشد", lens: "جذب مشتری و فروش سریع، عاشق فوریت و کمپین", weight: 2,
+           look: { bg: ["#3d77b0", "#1a3352"], skin: "#e8b48e", hair: "short", hairC: "#2a1b12", beard: "stubble", outfit: "overshirt", shirt: "#5f6d3c", inner: "#1d2a4c" } },
+  sadri: { name: "خانم صدری", role: "مدیر مالی", lens: "پول، حاشیهٔ سود و ریسک؛ با ریخت‌وپاش مخالف", weight: 3,
+           look: { bg: ["#8a3c58", "#2e1a2a"], skin: "#f0c6a3", hijab: "#7d2236", fringe: "straight", hairC: "#2b1a12", glasses: "#c9a14a", outfit: "blazer", shirt: "#3a3e48", inner: "#5a2a35" } },
+  haj:   { name: "حاج رضا", role: "کاسب قدیمی بازار", lens: "نگاه مشتری سنتی ۵۰ ساله که به هر چیز جدید شک داره", weight: 3,
+           look: { bg: ["#9a7344", "#3a2a1a"], skin: "#d9a17b", hair: "short", hairC: "#b9b9b9", beard: "full", beardC: "#c9c9c9", outfit: "vest", shirt: "#6e4c33", inner: "#f1ece2" } },
+  sara:  { name: "سارا", role: "مدیر عملیات", lens: "اجرا؛ فقط چیزی که با تیم و زمان فعلی شدنیه", weight: 2,
+           look: { bg: ["#2a8c86", "#123a3a"], skin: "#efc2a0", hijab: "#a9afb8", fringe: "side", hairC: "#1c120c", outfit: "blouse", shirt: "#1f8a86" } },
+  kiani: { name: "استاد کیانی", role: "سرمایه‌گذار ارزشی", lens: "ارزش بلندمدت، وفاداری مشتری و صبر", weight: 2,
+           look: { bg: ["#4d5e92", "#1c2440"], skin: "#eec0a0", hair: "bald", hairC: "#e9e9e9", mustache: true, beardC: "#efefef", glasses: "#8a4d2a", outfit: "suit", shirt: "#1f2a44", inner: "#bcd4ee" } },
+  donya: { name: "دنیا", role: "استراتژیست برند", lens: "اعتماد، داستان و محتوای اینستاگرام", weight: 2,
+           look: { bg: ["#c0614c", "#4a2420"], skin: "#d7a07c", hijab: "#efe3c9", fringe: "curly", hairC: "#22140d", outfit: "sweater", shirt: "#f07a62" } }
+};
+const ORDER = ["nima", "sadri", "haj", "sara", "kiani", "donya"];
+
+// a copy of the built-in advisors; a session's optional "personas" block is merged on top of it when that session loads
+const BASE_PERSONAS = JSON.parse(JSON.stringify(PERSONAS));
+const LOOK_DEFAULT = { skin: "#e8b48e", hair: "short", hairC: "#2a1b12", outfit: "blouse", shirt: "#5a6b8c", inner: "#1d2a4c" };
+const BG_POOL = [["#3d77b0", "#1a3352"], ["#8a3c58", "#2e1a2a"], ["#9a7344", "#3a2a1a"], ["#2a8c86", "#123a3a"], ["#4d5e92", "#1c2440"], ["#c0614c", "#4a2420"], ["#6a8a3c", "#24331a"], ["#7a4fa0", "#2a1c3a"]];
+const ID_RE = /^[a-z][a-z0-9_-]{0,23}$/i;
+const isColor = c => typeof c === "string" && /^#[0-9a-f]{6}$/i.test(c);
+function cleanLook(look, i, base){
+  const out = Object.assign({}, LOOK_DEFAULT, base || {});
+  if (!base) out.bg = BG_POOL[i % BG_POOL.length];
+  if (look && typeof look === "object") Object.keys(look).forEach(k => {
+    const v = look[k];
+    if (k === "bg"){ if (Array.isArray(v) && v.length === 2 && v.every(isColor)) out.bg = v; }
+    else if (k === "mustache") out.mustache = !!v;
+    else if (typeof v === "string" && (isColor(v) || /^[a-z]{2,12}$/.test(v))) out[k] = v;
+  });
+  if (out.hijab){ delete out.hair; if (!out.fringe) out.fringe = "side"; }
+  if (!out.beardC) out.beardC = out.hairC;
+  return out;
+}
+// session.personas: { id: { name, role, lens, weight, look } } — adds new advisors or overrides fields of existing ones
+function cleanPersonas(raw){
+  const out = {};
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return out;
+  Object.keys(raw).forEach((id, i) => {
+    const p = raw[id]; if (!ID_RE.test(id) || !p || typeof p !== "object") return;
+    const base = BASE_PERSONAS[id];
+    const s = v => (typeof v === "string" ? v.trim() : "");
+    const w = Number(p.weight);
+    out[id] = {
+      name: s(p.name) || (base ? base.name : id), role: s(p.role) || (base ? base.role : "مشاور"),
+      lens: s(p.lens) || (base ? base.lens : ""), weight: w > 0 && w <= 10 ? w : (base ? base.weight : 2),
+      look: cleanLook(p.look, i, base && base.look)
+    };
+  });
+  return out;
+}
+function applyPersonas(extra){
+  Object.keys(PERSONAS).forEach(k => delete PERSONAS[k]);
+  Object.assign(PERSONAS, JSON.parse(JSON.stringify(BASE_PERSONAS)), extra || {});
+}
+
+function shade(hex, k){
+  const n = parseInt(hex.slice(1), 16);
+  const c = s => Math.max(0, Math.min(255, Math.round(((n >> s) & 255) * k)));
+  return "#" + ((1 << 24) | (c(16) << 16) | (c(8) << 8) | c(0)).toString(16).slice(1);
+}
+function avatarSVG(id){
+  const L = PERSONAS[id].look, s = L.skin, sd = shade(s, .86), sh = L.shirt;
+  let body = '<path d="M12 124 C14 100 36 89 60 89 C84 89 106 100 108 124 Z" fill="' + sh + '"/>';
+  if (L.outfit === "overshirt") body += '<path d="M48 90 Q60 97 72 90 L69 124 L51 124 Z" fill="' + L.inner + '"/><path d="M48 90 L56 124 M72 90 L64 124" stroke="' + shade(sh, .7) + '" stroke-width="2"/>';
+  if (L.outfit === "blazer") body += '<path d="M50 90 L60 104 L70 90 Z" fill="' + L.inner + '"/><path d="M50 90 L58 112 L52 124 M70 90 L62 112 L68 124" stroke="' + shade(sh, .6) + '" stroke-width="2" fill="none"/>';
+  if (L.outfit === "vest") body = '<path d="M12 124 C14 100 36 89 60 89 C84 89 106 100 108 124 Z" fill="' + L.inner + '"/><path d="M22 124 C24 104 38 94 50 92 L60 112 L70 92 C82 94 96 104 98 124 Z" fill="' + sh + '"/><circle cx="60" cy="116" r="1.6" fill="' + shade(sh, .6) + '"/>';
+  if (L.outfit === "suit") body += '<path d="M50 90 L60 108 L70 90 Z" fill="' + L.inner + '"/><path d="M50 90 L57 110 L50 116 M70 90 L63 110 L70 116" stroke="' + shade(sh, .55) + '" stroke-width="2.2" fill="none"/>';
+  if (L.outfit === "blouse") body += '<path d="M52 90 Q60 99 68 90" stroke="' + shade(sh, .7) + '" stroke-width="2" fill="none"/>';
+  if (L.outfit === "sweater") body += '<path d="M48 90 Q60 100 72 90" stroke="' + shade(sh, .78) + '" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M30 112 v12 M40 108 v16 M80 108 v16 M90 112 v12" stroke="' + shade(sh, .85) + '" stroke-width="1.5"/>';
+
+  let back = "", top = "", face = "";
+  const faceRx = L.hijab ? 25 : 27;
+  if (L.hijab){
+    back = '<path d="M27 56 C25 22 95 22 93 56 C95 74 101 86 110 96 L108 124 L12 124 L10 96 C19 86 25 74 27 56 Z" fill="' + L.hijab + '"/><path d="M34 84 C40 94 52 98 60 98 C68 98 80 94 86 84" stroke="' + shade(L.hijab, .8) + '" stroke-width="2" fill="none"/>';
+    if (L.fringe === "straight") top += '<path d="M38 45 C42 36 52 32 62 33 C54 35 47 39 43 47 Z" fill="' + L.hairC + '"/>';
+    if (L.fringe === "side") top += '<path d="M37 48 C40 36 54 31 70 34 C58 35 48 40 42 50 Z" fill="' + L.hairC + '"/>';
+    if (L.fringe === "curly") for (let i = 0; i < 6; i++) top += '<circle cx="' + (40 + i * 7.6) + '" cy="' + (39 - Math.sin(i / 5 * Math.PI) * 4) + '" r="4.6" fill="' + L.hairC + '"/>';
+    top += '<path d="M31 52 C30 28 46 21 60 21 C74 21 90 28 89 52 C84 38 74 31 60 31 C46 31 36 38 31 52 Z" fill="' + L.hijab + '"/><path d="M36 34 C46 25 74 25 84 34" stroke="' + shade(L.hijab, 1.12) + '" stroke-width="2" fill="none" opacity=".6"/>';
+  } else {
+    face += '<circle cx="33" cy="58" r="6.5" fill="' + sd + '"/><circle cx="87" cy="58" r="6.5" fill="' + sd + '"/>';
+    if (L.hair === "short") top = '<path d="M33 51 C30 26 48 17 61 17 C79 17 92 29 87 51 C84 40 76 33 62 33 C52 33 42 36 36 44 Z" fill="' + L.hairC + '"/><path d="M48 21 C54 11 72 11 76 20 C68 16 58 17 48 21 Z" fill="' + shade(L.hairC, 1.25) + '"/>';
+    if (L.hair === "bald") top = '<path d="M33 62 C31 51 33 44 37 40 L39 60 Z M87 62 C89 51 87 44 83 40 L81 60 Z" fill="' + L.hairC + '"/><ellipse cx="52" cy="32" rx="9" ry="4.5" fill="#fff" opacity=".28" transform="rotate(-20 52 32)"/>';
+  }
+  if (L.beard === "full") face += '<path d="M34 58 C35 85 48 93 60 93 C72 93 85 85 86 58 C81 74 72 80 60 80 C48 80 39 74 34 58 Z" fill="' + L.beardC + '"/><path d="M50 70 Q55 66 60 68 Q65 66 70 70 Q60 72.5 50 70 Z" fill="' + L.beardC + '"/>';
+  if (L.beard === "stubble") face += '<path d="M36 62 C38 83 49 89 60 89 C71 89 82 83 84 62 C79 76 71 81 60 81 C49 81 41 76 36 62 Z" fill="' + L.hairC + '" opacity=".2"/>';
+  const brC = L.hair === "bald" ? L.beardC || L.hairC : (L.hairC || "#2a1b12");
+  face += '<g class="brows"><path d="M42 46 Q49 41.5 55 45.5 M65 45.5 Q71 41.5 78 46" stroke="' + brC + '" stroke-width="2.8" fill="none" stroke-linecap="round"/></g>';
+  face += '<g class="eyes"><ellipse cx="49" cy="56" rx="4.8" ry="5.4" fill="#fff"/><ellipse cx="71" cy="56" rx="4.8" ry="5.4" fill="#fff"/>' +
+          '<g class="pupil"><circle cx="49" cy="56.6" r="3" fill="#24180f"/><circle cx="71" cy="56.6" r="3" fill="#24180f"/><circle cx="50.1" cy="55.4" r="1.1" fill="#fff"/><circle cx="72.1" cy="55.4" r="1.1" fill="#fff"/></g>' +
+          '<ellipse class="lid" cx="49" cy="56" rx="5.4" ry="6" fill="' + s + '"/><ellipse class="lid" cx="71" cy="56" rx="5.4" ry="6" fill="' + s + '"/></g>';
+  if (L.glasses) face += '<g stroke="' + L.glasses + '" stroke-width="2" fill="rgba(255,255,255,.08)"><circle cx="49" cy="56" r="8.4"/><circle cx="71" cy="56" r="8.4"/></g><path d="M57.4 55.5 H62.6" stroke="' + L.glasses + '" stroke-width="2"/>';
+  face += '<path d="M60 58 Q56.5 65.5 61 66.5" stroke="' + shade(s, .7) + '" stroke-width="1.9" fill="none" stroke-linecap="round"/>';
+  face += '<circle cx="42" cy="66" r="5" fill="#ff7c7c" opacity=".26"/><circle cx="78" cy="66" r="5" fill="#ff7c7c" opacity=".26"/>';
+  if (L.mustache) face += '<path d="M48.5 69.5 Q55 64 60 67 Q65 64 71.5 69.5 Q60 73 48.5 69.5 Z" fill="' + L.beardC + '"/>';
+  const my = L.mustache || L.beard === "full" ? 1.5 : 0;
+  face += '<path class="m-closed" d="M52 ' + (72 + my) + ' Q60 ' + (78.5 + my) + ' 68 ' + (72 + my) + '" stroke="#7a2f26" stroke-width="2.6" fill="none" stroke-linecap="round"/>';
+  face += '<g class="m-open"><ellipse cx="60" cy="' + (74.5 + my) + '" rx="6.6" ry="5.4" fill="#5b1d18"/><ellipse cx="60" cy="' + (77.4 + my) + '" rx="4.2" ry="2.1" fill="#e9707a"/><path d="M54.6 ' + (71.3 + my) + ' Q60 ' + (69.8 + my) + ' 65.4 ' + (71.3 + my) + ' L65 ' + (73 + my) + ' Q60 ' + (72 + my) + ' 55 ' + (73 + my) + ' Z" fill="#fff"/></g>';
+
+  return '<svg class="av" viewBox="-6 -2 132 126" aria-hidden="true">' +
+    '<g class="bodyg">' + body + '</g>' +
+    '<g class="headg">' + back + '<rect x="51" y="78" width="18" height="16" rx="7" fill="' + sd + '"/>' +
+    '<ellipse cx="60" cy="55" rx="' + faceRx + '" ry="29" fill="' + s + '"/>' + top + face + '</g></svg>';
+}
+
+const CHAIR_SVG = '<svg viewBox="0 0 26 26" width="60%" height="60%" aria-hidden="true"><path d="M13 5v15M7 8.5h12M7 8.5l-2.4 4.8a2.4 2.4 0 0 0 4.8 0zM19 8.5l-2.4 4.8a2.4 2.4 0 0 0 4.8 0zM9.5 20.5h7" stroke="#f2c46b" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>';
+function face(id, cls){
+  const box = el("span", cls || "mini");
+  if (id === "chair") box.innerHTML = CHAIR_SVG;
+  else { box.innerHTML = avatarSVG(id); box.style.background = "radial-gradient(circle at 50% 35%," + PERSONAS[id].look.bg[0] + "," + PERSONAS[id].look.bg[1] + ")"; }
+  return box;
+}
+
+/* ---------- state ---------- */
+let S = null, T = [], idx = -1, playing = false, speed = 1;
+let timer = 0, typeTimer = 0, typingTimer = 0, talkTimer = 0;
+const SPEEDS = [1, 1.6, 2.5];                 // playback-speed buttons
+const TIMING = { base: 1500, perChar: 40 };    // ms each line stays on screen = base + perChar × letters (at 1x)
+
+function buildTimeline(s){
+  const t = [];
+  t.push({ stage: "brief", who: "chair", text: s.brief });
+  s.openings.forEach(o => t.push({ stage: "openings", who: o.advisor, text: o.text, pick: o.pick, stance: o.stance }));
+  s.faultLines.forEach(f => t.push({ stage: "fault", who: "chair", text: f.title + ": " + f.text }));
+  s.debate.forEach(d => t.push({ stage: "debate", who: d.advisor, target: d.target, text: d.text }));
+  s.votes.forEach(v => t.push({ stage: "vote", who: v.advisor, text: v.note, pick: v.pick, stance: v.stance, scores: v.scores }));
+  t.push({ stage: "verdict", who: "chair", text: s.verdict.headline + ". " + s.verdict.summary });
+  return t;
+}
+
+/* ---------- seats & frames ---------- */
+function seat(id){ return document.querySelector('.seat[data-id="' + id + '"]'); }
+// gaze: "l" / "r" (viewer's left / right) or null for straight ahead
+function setGaze(id, dir){
+  const s = seat(id); if (!s) return;
+  s.classList.toggle("gaze-l", dir === "l");
+  s.classList.toggle("gaze-r", dir === "r");
+}
+function centerX(id){ const s = seat(id); if (!s) return 0; const r = s.getBoundingClientRect(); return r.left + r.width / 2; }
+function lookAt(listener, speaker){ setGaze(listener, centerX(speaker) > centerX(listener) ? "r" : "l"); }
+function stopTalk(){
+  clearInterval(talkTimer); talkTimer = 0;
+  document.querySelectorAll(".seat.talking, .seat.mouth-open").forEach(s => s.classList.remove("talking", "mouth-open"));
+}
+function startTalk(id, ms){
+  stopTalk();
+  const s = seat(id); if (!s) return;
+  s.classList.add("talking");
+  setGaze(id, null);
+  if (reduce){ s.classList.add("mouth-open"); setTimeout(() => s.classList.remove("talking", "mouth-open"), ms); return; }
+  let open = false; const end = Date.now() + ms;
+  talkTimer = setInterval(() => {
+    if (Date.now() > end){ stopTalk(); return; }
+    open = Math.random() < (open ? .5 : .75);
+    s.classList.toggle("mouth-open", open);
+  }, 110);
+}
+function arrangeGaze(item){
+  document.querySelectorAll(".seat.react").forEach(s => s.classList.remove("react"));
+  S.advisors.forEach(id => {
+    if (id === item.who) return;
+    if (item.who === "chair"){ setGaze(id, null); return; }
+    if (id === item.target){ lookAt(id, item.who); seat(id)?.classList.add("react"); return; }
+    if (Math.random() < .82) lookAt(id, item.who); else setGaze(id, Math.random() < .5 ? "l" : "r");
+  });
+}
+// idle life: an occasional glance while nobody is talking
+setInterval(() => {
+  if (reduce || talkTimer || !S) return;
+  const ids = S.advisors; const id = ids[Math.floor(Math.random() * ids.length)];
+  const s = seat(id); if (!s || s.classList.contains("speaking")) return;
+  setGaze(id, Math.random() < .5 ? "l" : "r");
+  setTimeout(() => { if (!talkTimer && !playing) setGaze(id, null); }, 1300);
+}, 2200);
+
+/* ---------- rendering ---------- */
+function renderStatic(){
+  $("sessionTitle").textContent = S.title || "جلسهٔ شورا";
+  $("question").textContent = S.question;
+  const ob = $("options"); ob.textContent = "";
+  S.options.forEach(o => {
+    const row = el("div", "opt"); row.dataset.id = o.id;
+    row.append(el("span", "letter", o.id), el("span", "otext", o.text), el("span", "score", "–"));
+    const bar = el("div", "bar"); bar.append(el("i")); row.append(bar);
+    ob.append(row);
+  });
+  const seats = $("seats"); seats.textContent = "";
+  const n = S.advisors.length;
+  seats.classList.toggle("many", n > 6);
+  S.advisors.forEach((id, i) => {
+    const p = PERSONAS[id];
+    const st = el("div", "seat"); st.dataset.id = id;
+    // seats rise toward the ends like a curved table; skipped when there are enough advisors to wrap onto a second row
+    const off = n > 1 && n <= 6 ? Math.abs(i - (n - 1) / 2) / ((n - 1) / 2) : 0;
+    st.style.setProperty("--lift", (off * off * 30).toFixed(1) + "px");
+    const pt = el("div", "portrait");
+    const im = el("div", "ph"); im.innerHTML = avatarSVG(id); im.setAttribute("role", "img"); im.setAttribute("aria-label", p.name);
+    im.style.setProperty("--c1", p.look.bg[0]); im.style.setProperty("--c2", p.look.bg[1]);
+    im.style.setProperty("--bd", (i * -.9 - Math.random()) + "s"); im.style.setProperty("--blink", (4 + Math.random() * 2.5).toFixed(2) + "s");
+    const wave = el("span", "wave"); for (let k = 0; k < 4; k++) wave.append(el("i"));
+    const ty = el("span", "typing"); ty.append(el("i"), el("i"), el("i"));
+    pt.append(im, wave, ty);
+    const plate = el("div", "plate"); plate.append(el("b", null, p.name), el("span", null, p.role));
+    st.append(pt, plate, el("span", "chip"));
+    seats.append(st);
+  });
+  const steps = $("steps"); steps.textContent = "";
+  STAGES.forEach(sg => {
+    const li = el("li"); const b = el("button", null, sg.label); b.type = "button"; b.dataset.key = sg.key;
+    b.addEventListener("click", () => jumpTo(sg.key));
+    li.append(b); steps.append(li);
+  });
+  requestAnimationFrame(() => drawArc(null));
+}
+
+function setCaptionFace(id){ const c = $("cav"); c.textContent = ""; c.append(face(id)); }
+
+function resetDynamic(){
+  stopTalk();
+  $("mlist").textContent = ""; $("mlist").append(el("p", "empty", "هنوز کسی حرف نزده."));
+  document.querySelectorAll(".seat").forEach(s => { s.classList.remove("speaking", "typing-on", "react", "gaze-l", "gaze-r"); const c = s.querySelector(".chip"); c.className = "chip"; c.textContent = ""; });
+  document.querySelectorAll(".opt").forEach(o => { o.classList.remove("win"); o.querySelector(".score").textContent = "–"; o.querySelector(".bar i").style.width = "0"; });
+  $("verdict").hidden = true;
+  $("feed").textContent = "";
+  $("chamber").classList.remove("live");
+  const who = $("who"); who.textContent = ""; who.append(el("b", null, "رئیس جلسه"), el("span", null, "آمادهٔ شروع"));
+  setCaptionFace("chair");
+  $("speechText").textContent = fa(S.advisors.length) + " مشاور دور میز نشستن. «شروع جلسه» رو بزنید تا پرونده رو بررسی کنن.";
+  currentLink = null; drawArc(null);
+  markStages(null); updateCount();
+  document.body.classList.remove("started");
+}
+
+function markStages(cur){
+  const ci = cur ? STAGES.findIndex(s => s.key === cur) : -1;
+  document.querySelectorAll("#steps button").forEach((b, i) => { b.classList.toggle("active", i === ci); b.classList.toggle("done", i < ci); });
+}
+function updateCount(){
+  const left = Math.max(0, T.length - idx - 1);
+  $("count").textContent = idx < 0 ? fa(T.length) + " خط در این جلسه" : (left ? fa(left) + " خط تا پایان" : "جلسه تموم شد");
+  $("prog").style.width = (T.length ? ((idx + 1) / T.length) * 100 : 0) + "%";
+  $("minutesCount").textContent = idx >= 0 ? fa(idx + 1) + " از " + fa(T.length) : "";
+}
+
+let lastHead = null;
+function addEntry(item){
+  const list = $("mlist");
+  list.querySelector(".empty")?.remove();
+  if (lastHead !== item.stage){ lastHead = item.stage; list.append(el("div", "mstage", STAGES.find(s => s.key === item.stage).head)); }
+  const e = el("div", "entry" + (item.who === "chair" ? " chair" : ""));
+  const h = el("div", "eh");
+  h.append(face(item.who), el("b", null, item.who === "chair" ? "رئیس جلسه" : PERSONAS[item.who].name));
+  if (item.stance) h.append(el("span", "tag " + item.stance, (item.pick ? item.pick + " · " : "") + STANCE[item.stance]));
+  else if (item.target) h.append(el("span", "tag", "در جواب " + PERSONAS[item.target].name));
+  e.append(h, el("p", null, item.text));
+  list.append(e); list.scrollTop = list.scrollHeight;
+}
+function setChip(id, pick, stance){
+  const c = seat(id)?.querySelector(".chip"); if (!c) return;
+  c.className = "chip show " + stance; c.textContent = (pick ? pick + " · " : "") + STANCE[stance];
+}
+
+function computeScores(upTo){
+  const acc = {}, w = {};
+  S.options.forEach(o => { acc[o.id] = 0; w[o.id] = 0; });
+  for (let i = 0; i <= upTo; i++){
+    const it = T[i]; if (!it || it.stage !== "vote" || !it.scores) continue;
+    const wt = PERSONAS[it.who].weight;
+    S.options.forEach(o => { const v = Number(it.scores[o.id]); if (v >= 0){ acc[o.id] += v * wt; w[o.id] += wt; } });
+  }
+  const out = {}; S.options.forEach(o => { out[o.id] = w[o.id] ? acc[o.id] / w[o.id] : null; }); return out;
+}
+function paintScores(upTo, final){
+  const sc = computeScores(upTo); let best = null;
+  S.options.forEach(o => {
+    const row = document.querySelector('.opt[data-id="' + o.id + '"]'); if (!row) return;
+    const v = sc[o.id];
+    row.querySelector(".score").textContent = v == null ? "–" : fa(v.toFixed(1));
+    row.querySelector(".bar i").style.width = v == null ? "0" : (v * 10) + "%";
+    if (v != null && (best == null || v > sc[best])) best = o.id;
+  });
+  if (final){
+    const choice = S.options.some(o => o.id === S.verdict.choice) ? S.verdict.choice : best;
+    document.querySelectorAll(".opt").forEach(r => r.classList.toggle("win", r.dataset.id === choice));
+  }
+}
+
+let currentLink = null;
+function drawArc(link){
+  const svg = $("arc"), st = $("chamber");
+  const W = st.clientWidth, H = st.clientHeight;
+  const sk = st.getBoundingClientRect().width / (W || 1) || 1; // undo any page scale so rect maths stays in layout units
+  svg.setAttribute("viewBox", "0 0 " + W + " " + H);
+  let d = '<path d="M ' + W * .04 + ' ' + H * .46 + ' Q ' + W / 2 + ' ' + (-H * .1) + ' ' + W * .96 + ' ' + H * .46 + '" stroke="rgba(75,196,255,.3)" stroke-width="1.4" stroke-dasharray="4 7" fill="none"/>';
+  if (link){
+    const a = seat(link[0]), b = seat(link[1]);
+    if (a && b){
+      const sr = st.getBoundingClientRect(), ar = a.querySelector(".portrait").getBoundingClientRect(), br = b.querySelector(".portrait").getBoundingClientRect();
+      const x1 = (ar.left + ar.width / 2 - sr.left) / sk, y1 = (ar.top - sr.top) / sk + 4, x2 = (br.left + br.width / 2 - sr.left) / sk, y2 = (br.top - sr.top) / sk + 4;
+      const cy = Math.max(6, Math.min(y1, y2) - 30 - Math.abs(x2 - x1) * .12);
+      d += '<path d="M ' + x1 + ' ' + y1 + ' Q ' + (x1 + x2) / 2 + ' ' + cy + ' ' + x2 + ' ' + y2 + '" stroke="#f2c46b" stroke-width="2" stroke-dasharray="6 6" fill="none" stroke-linecap="round"><animate attributeName="stroke-dashoffset" from="24" to="0" dur=".8s" repeatCount="indefinite"/></path><circle cx="' + x2 + '" cy="' + y2 + '" r="4" fill="#f2c46b"/>';
+    }
+  }
+  svg.innerHTML = d;
+}
+window.addEventListener("resize", () => drawArc(currentLink));
+
+function showSpeech(item, animate, dur){
+  clearInterval(typeTimer);
+  const who = $("who"); who.textContent = "";
+  setCaptionFace(item.who);
+  if (item.who === "chair") who.append(el("b", null, "رئیس جلسه"), el("span", null, STAGES.find(s => s.key === item.stage).label));
+  else {
+    const p = PERSONAS[item.who];
+    who.append(el("b", null, p.name), el("span", null, p.role));
+    if (item.target) who.append(el("span", "to", "← " + PERSONAS[item.target].name));
+    if (item.stance) who.append(el("span", "to", (item.pick ? item.pick + " · " : "") + STANCE[item.stance]));
+  }
+  const p = $("speechText");
+  if (!animate || reduce){ p.textContent = item.text; return; }
+  const full = item.text, total = Math.max(500, dur * .62), stepMs = 30;
+  const per = Math.max(1, Math.ceil(full.length / (total / stepMs)));
+  let i = 0; const caret = el("span", "caret");
+  const tick = () => { i = Math.min(full.length, i + per); p.textContent = full.slice(0, i); if (i < full.length) p.append(caret); else clearInterval(typeTimer); };
+  tick(); typeTimer = setInterval(tick, stepMs);
+}
+
+// reel mode: the two previous lines sit above the live caption and slide up as new ones arrive
+function renderFeed(i){
+  const f = $("feed"); f.textContent = "";
+  for (let k = Math.max(0, i - 2); k < i; k++){
+    const it = T[k]; const row = el("div", "fi"); const d = el("div");
+    d.append(el("b", null, it.who === "chair" ? "رئیس جلسه" : PERSONAS[it.who].name), el("p", null, it.text));
+    row.append(face(it.who), d); f.append(row);
+  }
+}
+// keep the live part on screen in a small window; jump to the verdict when it lands
+function follow(item){
+  if (document.body.classList.contains("reel")) return;
+  const behavior = reduce ? "auto" : "smooth";
+  if (item.stage === "verdict") setTimeout(() => $("verdict").scrollIntoView({ behavior, block: "start" }), 450);
+  else {
+    const r = $("chamber").getBoundingClientRect();
+    if (r.top < 0 || r.bottom > innerHeight - 70) $("chamber").scrollIntoView({ behavior, block: "start" });
+  }
+}
+
+function durFor(item){ return (TIMING.base + item.text.length * TIMING.perChar) / speed; }
+
+function apply(i, animate){
+  const item = T[i];
+  markStages(item.stage);
+  document.querySelectorAll(".seat").forEach(s => s.classList.remove("speaking", "typing-on"));
+  $("chamber").classList.add("live");
+  document.body.classList.add("started");
+  if (item.who !== "chair") seat(item.who)?.classList.add("speaking");
+  currentLink = item.target ? [item.who, item.target] : null;
+  if (item.stage === "openings" || item.stage === "vote") setChip(item.who, item.pick, item.stance);
+  if (item.stage === "vote") paintScores(i, false);
+  if (item.stage === "verdict"){ paintScores(i, true); renderVerdict(); }
+  addEntry(item);
+  renderFeed(i);
+  if (animate) follow(item);
+  if (animate){
+    stopTalk();
+    arrangeGaze(item);
+    drawArc(currentLink);
+    const d = durFor(item);
+    showSpeech(item, true, d);
+    if (item.who !== "chair") startTalk(item.who, Math.max(500, d * .62));
+  }
+}
+
+function schedule(){
+  clearTimeout(timer); clearTimeout(typingTimer);
+  if (!playing) return;
+  const item = T[idx], d = item ? durFor(item) : 600, next = T[idx + 1];
+  if (next && next.who !== "chair") typingTimer = setTimeout(() => seat(next.who)?.classList.add("typing-on"), d * .7);
+  timer = setTimeout(stepForward, d);
+}
+function stepForward(){
+  if (idx >= T.length - 1){ setPlaying(false); return; }
+  idx++; apply(idx, true); updateCount(); schedule();
+}
+function setPlaying(on){
+  playing = on;
+  document.body.classList.toggle("playing", on);
+  $("playBtn").innerHTML = on
+    ? '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>'
+    : '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 5.5v13a1 1 0 0 1-1.5.9L5.8 13.2a1.4 1.4 0 0 1 0-2.4l9.7-6.2A1 1 0 0 1 17 5.5z"/></svg>';
+  $("playBtn").setAttribute("aria-label", on ? "توقف" : (idx >= T.length - 1 && idx >= 0 ? "پخش دوباره" : "شروع جلسه"));
+  if (!on){ clearTimeout(timer); clearTimeout(typingTimer); }
+}
+function togglePlay(){
+  if (!T.length) return;
+  if (playing){ setPlaying(false); return; }
+  if (idx >= T.length - 1){ restart(true); return; }
+  setPlaying(true);
+  if (idx < 0) stepForward(); else schedule();
+}
+function restart(play){
+  setPlaying(false); clearInterval(typeTimer); idx = -1; lastHead = null;
+  resetDynamic();
+  if (play){ setPlaying(true); stepForward(); }
+}
+function jumpTo(key){
+  setPlaying(false); clearInterval(typeTimer);
+  const lastOf = T.reduce((acc, it, i) => it.stage === key ? i : acc, -1);
+  if (lastOf < 0) return;
+  idx = -1; lastHead = null; resetDynamic();
+  for (let i = 0; i <= lastOf; i++){ idx = i; apply(i, false); }
+  const item = T[idx];
+  currentLink = item.target ? [item.who, item.target] : null;
+  arrangeGaze(item); drawArc(currentLink); showSpeech(item, false);
+  updateCount(); setPlaying(false);
+}
+
+function renderVerdict(){
+  const v = S.verdict, box = $("verdict"); box.textContent = "";
+  const choice = S.options.find(o => o.id === v.choice);
+  box.append(el("p", "eyebrow", "رأی نهایی شورا" + (choice ? " · گزینهٔ " + choice.id : "")));
+  box.append(el("h2", null, v.headline));
+  if (v.summary) box.append(el("p", "sum", v.summary));
+  const g = el("div", "vgrid");
+  const b1 = el("div", "vbox"); b1.append(el("h3", null, "قدم اول از فردا"), el("p", null, v.firstStep));
+  const b2 = el("div", "vbox watch"); b2.append(el("h3", null, "مراقب باشید"), el("p", null, v.watchOut));
+  g.append(b1, b2); box.append(g);
+  if (v.reasons && v.reasons.length){
+    const ul = el("ul", "reasons");
+    v.reasons.forEach(r => { if (!PERSONAS[r.advisor]) return; const li = el("li"); const t = el("div"); t.append(el("b", null, PERSONAS[r.advisor].name + ": "), document.createTextNode(r.text)); li.append(face(r.advisor), t); ul.append(li); });
+    box.append(ul);
+  }
+  const wrap = el("div", "tablewrap"), tb = el("table");
+  const hr = el("tr"); hr.append(el("th", null, "مشاور"), el("th", null, "وزن"));
+  S.options.forEach(o => hr.append(el("th", null, o.id))); hr.append(el("th", null, "رأی"));
+  const thead = el("thead"); thead.append(hr); tb.append(thead);
+  const tbody = el("tbody");
+  S.votes.forEach(vt => {
+    const p = PERSONAS[vt.advisor]; if (!p) return;
+    const tr = el("tr"); tr.append(el("td", null, p.name), el("td", null, fa(p.weight)));
+    S.options.forEach(o => tr.append(el("td", vt.pick === o.id ? "hi" : null, vt.scores && vt.scores[o.id] != null ? fa(vt.scores[o.id]) : "–")));
+    tr.append(el("td", null, vt.pick + " · " + STANCE[vt.stance])); tbody.append(tr);
+  });
+  tb.append(tbody); wrap.append(tb); box.append(wrap);
+  const act = el("div", "vactions"); const copy = el("button", "btn", "کپی رأی نهایی"); copy.type = "button";
+  copy.addEventListener("click", () => {
+    const text = "رأی شورا: " + v.headline + "\n" + (v.summary || "") + "\nقدم اول: " + v.firstStep + "\nمراقب باشید: " + v.watchOut;
+    const done = () => { copy.textContent = "کپی شد"; setTimeout(() => copy.textContent = "کپی رأی نهایی", 1600); };
+    try { navigator.clipboard.writeText(text).then(done, () => selectText(box)); } catch (e) { selectText(box); }
+  });
+  act.append(copy); box.append(act);
+  box.hidden = false;
+}
+function selectText(node){ const r = document.createRange(); r.selectNodeContents(node); const s = getSelection(); s.removeAllRanges(); s.addRange(r); }
+
+function load(session){
+  setPlaying(false); clearInterval(typeTimer); stopTalk();
+  applyPersonas(session.personas);
+  S = session; if (!S.advisors) S.advisors = ORDER.slice();
+  S.advisors = S.advisors.filter(id => PERSONAS[id]);
+  T = buildTimeline(S); idx = -1; lastHead = null;
+  renderStatic(); resetDynamic(); setPlaying(false);
+}
+
+/* ---------- controls ---------- */
+$("playBtn").addEventListener("click", togglePlay);
+$("restartBtn").addEventListener("click", () => restart(true));
+$("skipBtn").addEventListener("click", () => jumpTo("verdict"));
+function setSpeed(sp){
+  speed = sp;
+  document.querySelectorAll("#speeds button").forEach(x => x.classList.toggle("on", Number(x.dataset.sp) === sp));
+  if (playing) schedule();
+}
+SPEEDS.forEach(sp => {
+  const b = el("button", sp === speed ? "on" : null, fa(sp) + "x"); b.type = "button"; b.dataset.sp = sp;
+  b.addEventListener("click", () => setSpeed(sp));
+  $("speeds").append(b);
+});
+function setReel(on){
+  document.body.classList.toggle("reel", on);
+  requestAnimationFrame(() => drawArc(currentLink));
+  if (on) restart(false);
+}
+$("reelBtn").addEventListener("click", () => setReel(true));
+$("reelExit").addEventListener("click", () => setReel(false));
+$("reelPlay").addEventListener("click", togglePlay);
+$("reelRestart").addEventListener("click", () => restart(true));
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape" && !$("importBg").hidden){ $("importBg").hidden = true; return; }
+  if (e.key === "Escape" && !$("sheetBg").hidden && !genCtl){ $("sheetBg").hidden = true; return; }
+  if (e.target.closest("input,textarea") || !$("sheetBg").hidden || !$("importBg").hidden) return;
+  if (e.code === "Space"){ e.preventDefault(); togglePlay(); }
+  if (e.key === "Escape" && document.body.classList.contains("reel")) setReel(false);
+});
+
+/* ---------- new session (GapGPT via private Render backend) ---------- */
+let sample = null, genCtl = null;
+const inClaude = !!(window.claude && window.claude.use);
+ORDER.forEach(id => {
+  const lab = el("label", "pick");
+  const cb = document.createElement("input"); cb.type = "checkbox"; cb.value = id; cb.checked = true; cb.id = "fPick_" + id;
+  lab.append(cb, face(id), document.createTextNode(PERSONAS[id].name + " · " + PERSONAS[id].role));
+  $("fPicks").append(lab);
+});
+$("fCard").placeholder = "مثلاً:\nچی می‌فروشیم: کیک و دسر خونگی، سفارشی\nبه کی: خانواده‌ها و شرکت‌های اطراف، بیشتر از اینستاگرام\nقیمت: کیک تولد از حدود یک میلیون تومن\nعددهای فعلی: ماهی حدود ۶۰ سفارش\nبزرگ‌ترین مشکل: پیج دیده می‌شه ولی پیام‌ها کمتر به سفارش می‌رسن\nبودجه و تیم: ماهی ۵ میلیون تبلیغ، دو نفریم";
+$("newBtn").addEventListener("click", () => {
+  $("noClaude").hidden = true;
+  $("fCopy").hidden = true;
+  $("fGo").hidden = false;
+  $("fPromptOut").hidden = true;
+  setStatus("");
+  $("sheetBg").hidden = false; $("fQuestion").focus();
+});
+$("fClose").addEventListener("click", () => { genCtl?.abort(); $("sheetBg").hidden = true; });
+$("sheetBg").addEventListener("click", e => { if (e.target === $("sheetBg") && !genCtl) $("sheetBg").hidden = true; });
+$("fStop").addEventListener("click", () => genCtl?.abort());
+$("goImport").addEventListener("click", () => { $("sheetBg").hidden = true; openImport(); });
+
+const ERR = {
+  not_granted: "اجازهٔ استفاده از Claude داده نشد. بدون اون فقط جلسهٔ نمونه قابل پخشه.",
+  sampling_disabled: "Claude برای این حساب فعال نیست.",
+  rate_limited: "الان درخواست زیاد بوده. چند دقیقهٔ دیگه دوباره امتحان کنید.",
+  session_expired: "لطفاً دوباره وارد حساب Claude بشید.",
+  invalid_json: "جواب شورا کامل نرسید. دوباره «تشکیل جلسه» رو بزنید.",
+  refused: "این سؤال رو نمی‌شه بررسی کرد. متنش رو تغییر بدید.",
+  prompt_too_large: "متن‌ها خیلی بلنده. کارت معرفی رو کوتاه‌تر کنید."
+};
+function setStatus(t, err, spin){
+  const s = $("fStatus"); s.textContent = ""; s.className = "status" + (err ? " err" : "");
+  if (spin) s.append(el("span", "spinner")); s.append(document.createTextNode(t));
+}
+function buildPrompt(q, card, opts, ids){
+  const roster = ids.map(id => "- " + id + ": " + PERSONAS[id].name + "، " + PERSONAS[id].role + ". زاویهٔ دید: " + PERSONAS[id].lens + ". وزن رأی: " + PERSONAS[id].weight).join("\n");
+  const optText = opts.length ? opts.map(o => o.id + ") " + o.text).join("\n") : "(خالی) خودت ۳ یا ۴ گزینهٔ واقعی، مشخص و متفاوت پیشنهاد بده با شناسه‌های A، B، C، D.";
+  return "تو کارگردان یک «جلسهٔ شورای مشاوران» برای صاحب یک کسب‌وکار هستی. مشاوران شخصیت‌های خیالی‌اند.\n\nاعضای شورا (شناسه: نام، نقش، زاویهٔ دید، وزن رأی):\n" + roster +
+    "\n\nسؤال: " + q + "\n\nکارت معرفی کسب‌وکار:\n" + (card || "(داده نشده)") + "\n\nگزینه‌ها:\n" + optText +
+    "\n\nقوانین:\n- همهٔ متن‌ها فارسی محاوره‌ای، کوتاه و مشخص. هر جمله حداکثر ۲۰۰ کاراکتر.\n- هر مشاور دقیقاً از زاویهٔ دید خودش حرف بزند. تعارف نکنند و اگر مخالف‌اند صریح بگویند.\n- فقط از اطلاعات داده‌شده استفاده کن. اگر عددی حدس زده می‌شود، بگو «حدسی».\n- در مناظره هر خط جواب مستقیم به یک مشاور دیگر است (target) و بحث باید جلو برود، نه تکرار. حداقل یک نفر نظرش را با یک استدلال خوب عوض کند.\n- امتیازها عدد صحیح ۱ تا ۱۰ برای هر گزینه. verdict.choice باید گزینه‌ای باشد که میانگین وزنی امتیازهایش بیشتر است.\n\n" +
+    'فقط یک شیء JSON با همین ساختار برگردان:\n{"title":"عنوان کوتاه جلسه","brief":"خلاصهٔ پرونده در ۲ جمله","options":[{"id":"A","text":"..."}],\n"openings":[{"advisor":"شناسه","pick":"A","stance":"yes|yes_if|amend|no","text":"..."}],\n"faultLines":[{"title":"...","text":"..."}],\n"debate":[{"advisor":"شناسه","target":"شناسه","text":"..."}],\n"votes":[{"advisor":"شناسه","pick":"A","stance":"yes|yes_if|amend|no","scores":{"A":7,"B":5},"note":"..."}],\n"verdict":{"choice":"A","headline":"...","summary":"...","reasons":[{"advisor":"شناسه","text":"..."}],"watchOut":"...","firstStep":"..."}}\n\nتعدادها: openings یکی برای هر مشاور، faultLines دو یا سه تا، debate شش تا هشت خط، votes یکی برای هر مشاور، reasons سه تا.';
+}
+function normalize(raw, q, opts, ids){
+  if (!raw || typeof raw !== "object") throw { code: "invalid_json" };
+  const str = v => (typeof v === "string" ? v.trim() : "");
+  const okStance = s => (STANCE[s] ? s : "yes_if");
+  let options = Array.isArray(raw.options) ? raw.options.map(o => ({ id: str(o && o.id).toUpperCase().slice(0, 1), text: str(o && o.text) })).filter(o => /^[A-D]$/.test(o.id) && o.text) : [];
+  if (opts.length) options = opts;
+  if (options.length < 2) throw { code: "invalid_json" };
+  const oid = new Set(options.map(o => o.id));
+  const okPick = p => (oid.has(str(p).toUpperCase()) ? str(p).toUpperCase() : options[0].id);
+  const has = id => ids.includes(id);
+  const arr = v => (Array.isArray(v) ? v.filter(x => x && typeof x === "object") : []);
+  const openings = arr(raw.openings).filter(o => has(o.advisor) && str(o.text)).map(o => ({ advisor: o.advisor, pick: okPick(o.pick), stance: okStance(o.stance), text: str(o.text) }));
+  const faultLines = arr(raw.faultLines).filter(f => str(f.title) || str(f.text)).slice(0, 3).map(f => ({ title: str(f.title) || "اختلاف", text: str(f.text) }));
+  const debate = arr(raw.debate).filter(d => has(d.advisor) && str(d.text)).slice(0, 10).map(d => ({ advisor: d.advisor, target: has(d.target) && d.target !== d.advisor ? d.target : null, text: str(d.text) }));
+  const votes = arr(raw.votes).filter(v => has(v.advisor)).map(v => {
+    const sc = {}; options.forEach(o => { const n = Math.round(Number(v.scores && v.scores[o.id])); sc[o.id] = n >= 1 && n <= 10 ? n : 5; });
+    return { advisor: v.advisor, pick: okPick(v.pick), stance: okStance(v.stance), scores: sc, note: str(v.note) || "رأیم " + okPick(v.pick) + " هست." };
+  });
+  if (!openings.length || !votes.length) throw { code: "invalid_json" };
+  const vd = raw.verdict && typeof raw.verdict === "object" ? raw.verdict : {};
+  return { title: str(raw.title) || "جلسهٔ جدید", advisors: ids, question: q, brief: str(raw.brief) || q, options, openings, faultLines, debate, votes,
+    verdict: { choice: okPick(vd.choice), headline: str(vd.headline) || "رأی شورا", summary: str(vd.summary),
+      reasons: arr(vd.reasons).filter(r => has(r.advisor) && str(r.text)).slice(0, 4).map(r => ({ advisor: r.advisor, text: str(r.text) })),
+      watchOut: str(vd.watchOut) || "–", firstStep: str(vd.firstStep) || "–" } };
+}
+function readForm(){
+  const q = $("fQuestion").value.trim(), card = $("fCard").value.trim();
+  const opts = ["A", "B", "C", "D"].map(id => ({ id, text: $("fOpt" + id).value.trim() })).filter(o => o.text);
+  const ids = ORDER.filter(id => $("fPick_" + id).checked);
+  if (!q){ setStatus("سؤال جلسه رو بنویسید.", true); $("fQuestion").focus(); return null; }
+  if (ids.length < 3){ setStatus("حداقل ۳ مشاور انتخاب کنید.", true); return null; }
+  if (opts.length === 1){ setStatus("یا حداقل دو گزینه بنویسید، یا همه رو خالی بذارید تا شورا پیشنهاد بده.", true); return null; }
+  return { q, card, opts, ids };
+}
+$("sheet").addEventListener("submit", async e => {
+  e.preventDefault(); if (genCtl) return;
+  const f = readForm(); if (!f) return;
+  const { q, card, opts, ids } = f;
+  genCtl = new AbortController(); $("fGo").disabled = true; $("fStop").hidden = false;
+  setStatus("اعضای شورا دارن پرونده رو بررسی می‌کنن…", false, true);
+  try {
+    const response = await fetch("/api/generate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ prompt: buildPrompt(q, card, opts, ids) }),
+      signal: genCtl.signal
+    });
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.error || "خطا در ارتباط با گپ‌جی‌پی‌تی.");
+    const raw = result;
+    const session = normalize(raw, q, opts, ids);
+    load(session); $("sheetBg").hidden = true; setStatus("");
+    rememberSession(session);
+    setPlaying(true); stepForward();
+  } catch (err){
+    if (err && err.name === "AbortError") setStatus("متوقف شد.");
+    else setStatus((err && err.message) || ERR[err && err.code] || "ساختن جلسه به مشکل خورد. دوباره امتحان کنید.", true);
+  } finally { genCtl = null; $("fGo").disabled = false; $("fStop").hidden = true; }
+});
+// outside Claude: turn the form into a ready-made message for any AI chat; its answer comes back through «وارد کردن جلسه»
+$("fCopy").addEventListener("click", () => {
+  const f = readForm(); if (!f) return;
+  const text = buildPrompt(f.q, f.card, f.opts, f.ids) +
+    '\n\nدو فیلد دیگه هم توی همین JSON بذار: "question" (متن همین سؤال) و "advisors" (فهرست شناسه‌های مشاورها به ترتیب نشستن). کل JSON رو داخل یک بلوک کد بده تا راحت کپی بشه.';
+  const out = $("fPromptOut"); out.hidden = true;
+  copyText(text, ok => {
+    if (ok){ setStatus("دستور کپی شد. توی چت هوش مصنوعی‌تون بچسبونید، بعد JSON جوابش رو با «وارد کردن جلسه» بیارید."); return; }
+    out.value = text; out.hidden = false; out.focus(); out.select();
+    setStatus("کپی خودکار نشد. متن پایین انتخاب شده؛ Ctrl+C رو بزنید (یا دستی کپی کنید) و توی چت هوش مصنوعی‌تون بچسبونید.", true);
+  });
+});
+function copyText(text, done){
+  const fallback = () => {
+    const ta = el("textarea"); ta.value = text; ta.setAttribute("readonly", ""); ta.style.position = "fixed"; ta.style.opacity = "0";
+    document.body.append(ta); ta.select(); let ok = false; try { ok = document.execCommand("copy"); } catch (_) {} ta.remove(); done(ok);
+  };
+  try { navigator.clipboard.writeText(text).then(() => done(true), fallback); } catch (_) { fallback(); }
+}
+
+/* ---------- import a session that any AI produced ---------- */
+function openImport(){ $("importStatus").textContent = ""; $("importStatus").className = "status"; $("importBg").hidden = false; $("importText").focus(); }
+function importStatus(t, err){ const s = $("importStatus"); s.textContent = t; s.className = "status" + (err ? " err" : ""); }
+$("importBtn").addEventListener("click", openImport);
+$("importClose").addEventListener("click", () => { $("importBg").hidden = true; });
+$("importBg").addEventListener("click", e => { if (e.target === $("importBg")) $("importBg").hidden = true; });
+
+// pull the JSON object out of whatever was pasted (code fences, a sentence before or after it, a stray BOM)
+function parsePasted(text){
+  let t = String(text || "").replace(/^﻿/, "").trim();
+  if (!t) throw "اول متن JSON جلسه رو اینجا بچسبونید.";
+  const fence = t.match(/```[a-zA-Z]*\s*([\s\S]*?)```/);
+  if (fence && fence[1].includes("{")) t = fence[1].trim();
+  const a = t.indexOf("{"), b = t.lastIndexOf("}");
+  if (a < 0 || b <= a) throw "توی این متن هیچ JSON‌ای پیدا نشد. فقط بلوک کدی رو کپی کنید که با ⁦{⁩ شروع می‌شه و با ⁦}⁩ تموم می‌شه.";
+  t = t.slice(a, b + 1);
+  try { return JSON.parse(t); } catch (err){
+    // second try: curly quotes some chat apps add, and trailing commas
+    try { return JSON.parse(t.replace(/[“”]/g, '"').replace(/,\s*([}\]])/g, "$1")); } catch (_) {}
+    const msg = String(err && err.message || "");
+    let line = 0; const lm = msg.match(/line (\d+)/), pm = msg.match(/position (\d+)/);
+    if (lm) line = Number(lm[1]); else if (pm) line = t.slice(0, Number(pm[1])).split("\n").length;
+    throw "این JSON درست نیست و خونده نشد" + (line ? " (حدود خط " + fa(line) + ")" : "") +
+      ". معمولاً یعنی جواب کامل کپی نشده، یا یه ویرگول یا گیومه جا افتاده. از هوش مصنوعی‌تون بخواید: «JSON جلسه رو کامل و درست، توی یه بلوک کد، دوباره بده».";
+  }
+}
+// check the pasted session with clear Persian messages, then hand it to normalize() like a session made inside Claude
+function validateSession(raw){
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) throw "این JSON شکل جلسه نیست؛ باید یه شیء باشه که با ⁦{⁩ شروع می‌شه، نه یه فهرست.";
+  const str = v => (typeof v === "string" ? v.trim() : "");
+  const personas = cleanPersonas(raw.personas);
+  applyPersonas(personas);
+  const q = str(raw.question) || str(raw.title);
+  if (!q) throw "فیلد question (متن سؤال جلسه) خالیه یا نیست.";
+  const goodOpts = Array.isArray(raw.options) ? raw.options.filter(o => o && /^[A-Da-d]$/.test(str(o.id)) && str(o.text)) : [];
+  if (goodOpts.length < 2) throw "حداقل دو گزینه لازمه، هر کدوم با id یکی از A تا D و یه text. الان " + fa(goodOpts.length) + " گزینهٔ درست پیدا شد.";
+  if (!Array.isArray(raw.openings) || !raw.openings.length) throw "بخش openings (موضع اول هر مشاور) خالیه یا نیست.";
+  if (!Array.isArray(raw.votes) || !raw.votes.length) throw "بخش votes (رأی هر مشاور) خالیه یا نیست.";
+  if (!raw.verdict || typeof raw.verdict !== "object") throw "بخش verdict (رأی نهایی) نیست.";
+  const seen = [];
+  const note = id => { if (typeof id === "string" && id && !seen.includes(id)) seen.push(id); };
+  (Array.isArray(raw.advisors) ? raw.advisors : []).forEach(note);
+  [raw.openings, raw.votes, raw.debate, raw.verdict.reasons].forEach(list => (Array.isArray(list) ? list : []).forEach(x => { if (x){ note(x.advisor); note(x.target); } }));
+  const unknown = seen.filter(id => !PERSONAS[id]);
+  if (unknown.length) throw "این مشاورها توی صفحه تعریف نشدن: " + unknown.map(id => "«" + id + "»").join("، ") +
+    ". شناسه‌ها باید یکی از " + ORDER.join("، ") + " باشن، یا مشاور تازه رو توی بخش personas همین JSON تعریف کنید.";
+  let session;
+  try { session = normalize(raw, q, [], seen); }
+  catch (_){ throw "ساختار جلسه کامل نیست: هر موضع و رأی باید advisor و text/scores داشته باشه. از هوش مصنوعی‌تون بخواید JSON رو دقیقاً طبق ساختار فایل دستورالعمل بده."; }
+  if (Object.keys(personas).length) session.personas = personas;
+  return session;
+}
+function runImport(text){
+  let session;
+  try { session = validateSession(parsePasted(text)); }
+  catch (msg){
+    applyPersonas(S && S.personas);   // undo any half-applied advisors from the rejected paste
+    importStatus(typeof msg === "string" ? msg : "این متن خونده نشد. دوباره کپی کنید و امتحان کنید.", true);
+    return;
+  }
+  load(session); rememberSession(session);
+  $("importBg").hidden = true; $("importText").value = ""; importStatus("");
+  setPlaying(true); stepForward();
+}
+$("importGo").addEventListener("click", () => runImport($("importText").value));
+$("importFile").addEventListener("change", e => {
+  const file = e.target.files && e.target.files[0]; if (!file) return;
+  const r = new FileReader();
+  r.onload = () => { $("importText").value = String(r.result || ""); runImport(r.result); };
+  r.onerror = () => importStatus("فایل خونده نشد.", true);
+  r.readAsText(file, "utf-8");
+  e.target.value = "";
+});
+
+/* ---------- boot & sample picker ---------- */
+// sample sessions live inside this file so the page also works when opened straight from disk (file://)
+const SAMPLES = [
+  { key: "trial", label: "۳ روز رایگان بدیم؟", data: {
+    "title": "۳ روز رایگان: طعمه یا تله؟",
+    "question": "اگه ۳ روز دورهٔ رایگان بذاریم، کاربر بیشتری جذب می‌شه؟ یا کاربر به رایگان عادت می‌کنه و دیگه پول نمی‌ده؟",
+    "brief": "اپلیکیشن اشتراکی ما برای صاحبای کسب‌وکار کوچیک داره لانچ می‌شه و باید تصمیم بگیریم دورهٔ رایگان چقدر باشه. ترس اصلی اینه که ۳ روز یا کاربر نیاره، یا کاربر رو به مجانی عادت بده.",
+    "options": [
+      {
+        "id": "A",
+        "text": "۳ روز رایگان، بعد قفل تا خرید اشتراک"
+      },
+      {
+        "id": "B",
+        "text": "۱۴ روز رایگان با یادآوری قبل از تموم شدن"
+      },
+      {
+        "id": "C",
+        "text": "نسخهٔ رایگان همیشگی ولی محدود، اشتراک برای امکانات کامل"
+      },
+      {
+        "id": "D",
+        "text": "بدون دورهٔ رایگان، فقط ضمانت ۷ روزهٔ برگشت پول"
+      }
+    ],
+    "openings": [
+      {
+        "advisor": "nima",
+        "pick": "A",
+        "stance": "yes",
+        "text": "۳ روز یعنی فوریت. کاربر می‌دونه وقت نداره، زود تصمیم می‌گیره. یه کمپین «فقط ۷۲ ساعت» بزنیم، نصب‌ها می‌ترکه. من ۳ روز رو می‌خوام."
+      },
+      {
+        "advisor": "sadri",
+        "pick": "D",
+        "stance": "yes_if",
+        "text": "هر روز رایگان یعنی خرج سرور و پشتیبانی بدون یه ریال درآمد. ضمانت برگشت پول یعنی پول از روز اول میاد. اگه برگشتی زیر ۱۰٪ باشه (حدسی)، D امن‌ترینه."
+      },
+      {
+        "advisor": "haj",
+        "pick": "C",
+        "stance": "yes",
+        "text": "ببین، من به چیزی که نمی‌شناسم پول نمی‌دم. یه چیزی بدین همیشه دستم باشه، اگه دیدم به درد کاسبیم می‌خوره، خودم میام می‌خرم."
+      },
+      {
+        "advisor": "sara",
+        "pick": "B",
+        "stance": "yes_if",
+        "text": "۳ روز یعنی تیم باید هر کاربر رو ظرف ۷۲ ساعت راه بندازه. ما ۳ نفریم، نمی‌کشیم. ۱۴ روز آره، به شرطی که آموزش اولیه خودکار باشه."
+      },
+      {
+        "advisor": "kiani",
+        "pick": "B",
+        "stance": "yes",
+        "text": "عادت از مجانی بودن ساخته نمی‌شه، از اطلاعاتی ساخته می‌شه که آدم خودش ریخته توش. تو ۳ روز هیچ کاسبی اطلاعات واقعی‌شو وارد نمی‌کنه."
+      },
+      {
+        "advisor": "donya",
+        "pick": "B",
+        "stance": "amend",
+        "text": "«قفل بعد ۳ روز» تو ذهن مردم می‌شه تله. یه استوری عصبانی کافیه که برند ما خراب شه. ۱۴ روز، ولی باید قصه‌شو درست تعریف کنیم."
+      }
+    ],
+    "faultLines": [
+      {
+        "title": "فوریت یا فرصت دیدن ارزش",
+        "text": "فشار ۳ روزه کاربر رو به تصمیم می‌رسونه، یا قبل از اینکه ارزش اپ ما رو ببینه فراریش می‌ده؟"
+      },
+      {
+        "title": "رایگان موقت یا همیشگی",
+        "text": "کدوم واقعاً انتظار «مجانی» می‌سازه: یه دورهٔ مشخص و تاریخ‌دار، یا نسخه‌ای که هیچ‌وقت تموم نمی‌شه؟"
+      },
+      {
+        "title": "ظرفیت تیم",
+        "text": "تیم کوچیک ما هفته‌ای چند تا کاربر تازه رو واقعاً می‌تونه راه بندازه و همراهی کنه؟"
+      }
+    ],
+    "debate": [
+      {
+        "advisor": "nima",
+        "target": "sadri",
+        "text": "خانم صدری، D یعنی کاربر قبل از دیدن هیچی کارتشو بکشه. برای اپی که کسی اسمشو نشنیده، یعنی نصف ثبت‌نام‌ها پر (حدسی). با این، رشد نداریم."
+      },
+      {
+        "advisor": "sadri",
+        "target": "nima",
+        "text": "نصفِ کاربرِ پول‌ده می‌ارزه به دو برابرِ کاربرِ مفتی. ولی قبول، وقتی هنوز اعتباری نداریم، ضمانت برگشت پول رو کسی باور نمی‌کنه."
+      },
+      {
+        "advisor": "haj",
+        "target": "nima",
+        "text": "نیما جان، من صبح مغازه رو باز می‌کنم، شب می‌بندم. ۳ روزت تموم شده، من هنوز رمزمو پیدا نکردم. بعدش قفل؟ دیگه طرفش نمیام."
+      },
+      {
+        "advisor": "kiani",
+        "target": "haj",
+        "text": "حاج رضا نکتهٔ اصلی رو گفت. کاسب وقتی وابسته می‌شه که دو هفته اطلاعات کار خودشو ریخته باشه توش. اون موقع پول دادن راحت‌تر از دل کندنه."
+      },
+      {
+        "advisor": "nima",
+        "target": "kiani",
+        "text": "باشه، قانع شدم، ۳ روز رو پس می‌گیرم. ولی فوریت رو ول نمی‌کنم: ۱۴ روز، با یادآوری روز ۱۲ که «اطلاعاتت اینجاست، نذار خاک بخوره»."
+      },
+      {
+        "advisor": "donya",
+        "target": "haj",
+        "text": "حاج رضا، نسخهٔ مجانیِ همیشگی یعنی خودمون به مردم یاد بدیم اپ ما مفته. ولی ۱۴ روزی که تاریخش معلومه، کسی رو طلبکار نمی‌کنه."
+      },
+      {
+        "advisor": "sara",
+        "target": "nima",
+        "text": "یادآوری روز ۱۲ اوکی. ولی اگه بخوای تماس آموزشی هم بذاری، ما هفته‌ای حداکثر ۴۰ تا تماس ۱۰ دقیقه‌ای می‌کشیم (حدسی). بیشترش صف می‌شه."
+      },
+      {
+        "advisor": "sadri",
+        "target": "sara",
+        "text": "پس تماس فقط برای کسایی که تا روز ۳ اطلاعات وارد کردن؛ پول رو جایی خرج کنیم که احتمال خرید هست. با B موافقم، به شرطی که اطلاعات بعد دوره پاک نشه."
+      }
+    ],
+    "votes": [
+      {
+        "advisor": "nima",
+        "pick": "B",
+        "stance": "yes",
+        "scores": {
+          "A": 5,
+          "B": 8,
+          "C": 4,
+          "D": 2
+        },
+        "note": "فوریت رو از روز اول بردیم گذاشتیم روز ۱۲؛ اونجا جواب می‌ده."
+      },
+      {
+        "advisor": "sadri",
+        "pick": "B",
+        "stance": "yes_if",
+        "scores": {
+          "A": 4,
+          "B": 7,
+          "C": 3,
+          "D": 6
+        },
+        "note": "به شرطی که تماس آموزشی فقط برای کاربرای فعال باشه."
+      },
+      {
+        "advisor": "haj",
+        "pick": "C",
+        "stance": "yes",
+        "scores": {
+          "A": 2,
+          "B": 6,
+          "C": 8,
+          "D": 3
+        },
+        "note": "من هنوزم یه چیز همیشگی می‌خوام، ولی ۱۴ روز از ۳ روز خیلی آدم‌تره."
+      },
+      {
+        "advisor": "sara",
+        "pick": "B",
+        "stance": "yes_if",
+        "scores": {
+          "A": 2,
+          "B": 8,
+          "C": 5,
+          "D": 4
+        },
+        "note": "اگه تماس‌ها سقف هفتگی داشته باشه، تیم می‌کشه."
+      },
+      {
+        "advisor": "kiani",
+        "pick": "B",
+        "stance": "yes",
+        "scores": {
+          "A": 2,
+          "B": 9,
+          "C": 4,
+          "D": 5
+        },
+        "note": "دو هفته اطلاعات واقعی، بهترین قفل وفاداریه."
+      },
+      {
+        "advisor": "donya",
+        "pick": "B",
+        "stance": "amend",
+        "scores": {
+          "A": 3,
+          "B": 8,
+          "C": 3,
+          "D": 4
+        },
+        "note": "باید بلند بگیم: «اطلاعاتت مال خودته، حتی بعد از دوره»."
+      }
+    ],
+    "verdict": {
+      "choice": "B",
+      "headline": "۱۴ روز رایگان، نه ۳ روز",
+      "summary": "۳ روز برای یه کاسب شلوغ حتی به راه‌اندازی نمی‌رسه، چه برسه به دیدن ارزش. ۱۴ روزِ تاریخ‌دار با یادآوری روز ۱۲، نگه داشتن اطلاعات و یه تماس کوتاه، هم عادت می‌سازه هم انتظار مجانیِ همیشگی نمی‌سازه.",
+      "reasons": [
+        {
+          "advisor": "haj",
+          "text": "کاسب شلوغ تو ۳ روز فقط وقت می‌کنه ثبت‌نام کنه؛ قفل زودهنگام یعنی دیگه برنمی‌گرده."
+        },
+        {
+          "advisor": "kiani",
+          "text": "عادت از اطلاعاتی میاد که کاربر خودش وارد کرده، و این دو هفته وقت می‌خواد."
+        },
+        {
+          "advisor": "donya",
+          "text": "دورهٔ رایگانِ تاریخ‌دار کسی رو طلبکار نمی‌کنه؛ نسخهٔ مجانیِ همیشگی می‌کنه."
+        }
+      ],
+      "watchOut": "کاربری که تا روز ۳ هیچ اطلاعاتی وارد نکرده، احتمالاً تا روز ۱۴ هم نمی‌کنه؛ این گروه رو جدا بشمرید و براشون وقت تیم نسوزونید.",
+      "firstStep": "فردا متن یادآوری روز ۱۲ و اسکریپت تماس ۱۰ دقیقه‌ای رو بنویسید و روی ۲۰ کاربر اول تست کنید."
+    }
+  } },
+  { key: "plans", label: "چند تا پلن داشته باشیم؟", data: {
+    "title": "چند تا پلن؟ دعوای قیمت‌گذاری",
+    "question": "برای فروش اشتراک چند تا پلن داشته باشیم؟ از اول پولی باشه یا رایگان؟ امکانات رو دسته‌بندی و محدود کنیم یا نه؟",
+    "brief": "اپلیکیشن اشتراکی ما آمادهٔ فروشه و باید تعداد پلن‌ها، پولی یا رایگان بودن، و نوع محدودیت‌ها رو مشخص کنیم. مشتری ما کاسب شلوغیه که وقت مقایسهٔ جدول‌های پیچیده رو نداره.",
+    "options": [
+      {
+        "id": "A",
+        "text": "یه پلن ساده با همهٔ امکانات، از اول پولی با ضمانت برگشت پول"
+      },
+      {
+        "id": "B",
+        "text": "سه پلن پایه، حرفه‌ای و ویژه، بدون نسخهٔ رایگان"
+      },
+      {
+        "id": "C",
+        "text": "نسخهٔ رایگان محدود به‌اضافهٔ دو پلن پولی"
+      },
+      {
+        "id": "D",
+        "text": "یه پلن، فقط فرق ماهانه و سالانه، بدون محدودیت امکانات"
+      }
+    ],
+    "openings": [
+      {
+        "advisor": "nima",
+        "pick": "B",
+        "stance": "yes",
+        "text": "سه تا پلن، وسطی رو «پرفروش‌ترین» علامت بزنیم، ویژه رو گرون بذاریم که وسطی ارزون دیده شه. این ترفند همیشه جواب می‌ده، ببینید."
+      },
+      {
+        "advisor": "sadri",
+        "pick": "A",
+        "stance": "yes_if",
+        "text": "از اول پولی، با ضمانت برگشت پول. ولی باید سالانه هم داشته باشیم با ۲ ماه تخفیف؛ یعنی پول ۱۲ ماه همین اول کار میاد تو حساب."
+      },
+      {
+        "advisor": "haj",
+        "pick": "A",
+        "stance": "yes",
+        "text": "من بین سه تا پلن گیج می‌شم. یه قیمت بگو، همه چی توش باشه، تموم. هر چی بیشتر حق انتخاب بدی، من بیشتر می‌گم «بعداً»."
+      },
+      {
+        "advisor": "sara",
+        "pick": "D",
+        "stance": "yes",
+        "text": "هر پلن یعنی یه دسته سؤال جدید برای پشتیبانی: «این تو پلن من هست؟» یه پلن با ماهانه و سالانه، تیم ۳ نفره‌مون راحت جوابشو می‌ده."
+      },
+      {
+        "advisor": "kiani",
+        "pick": "C",
+        "stance": "yes_if",
+        "text": "رایگانِ محدود یعنی قیف بلندمدت؛ آدم امروز مجانی میاد، سال بعد مشتری وفادار می‌شه. به شرطی که محدودیت جلوی کار اصلی رو نگیره."
+      },
+      {
+        "advisor": "donya",
+        "pick": "C",
+        "stance": "amend",
+        "text": "رایگان یعنی اعتماد: کاسب بدون ترس امتحان می‌کنه و تو اینستا تعریف می‌کنه. ولی اسم پلن‌ها باید ساده باشه، نه «ویژه پلاس طلایی»."
+      }
+    ],
+    "faultLines": [
+      {
+        "title": "سادگی یا حق انتخاب",
+        "text": "هر پلن اضافه یه تصمیم سخت‌تره برای کاسبی که وقت مقایسه نداره."
+      },
+      {
+        "title": "قفل کار اصلی یا اضافه‌ها",
+        "text": "محدود کردن کار اصلی آدم رو عصبانی می‌کنه، ولی محدود کردن اضافه‌ها منصفانه به نظر میاد."
+      },
+      {
+        "title": "رایگان: اعتماد یا هزینه",
+        "text": "نسخهٔ رایگان همیشگی اعتماد می‌سازه، یا فقط تیکت پشتیبانی و خرج سرور بدون درآمد؟"
+      }
+    ],
+    "debate": [
+      {
+        "advisor": "haj",
+        "target": "nima",
+        "text": "نیما جان، پایه، حرفه‌ای، ویژه... من سه تا ستون می‌بینم، عینکمو برمی‌دارم، می‌گم «بذار فکر کنم». بعدش دیگه فکر نمی‌کنم."
+      },
+      {
+        "advisor": "nima",
+        "target": "haj",
+        "text": "حاج رضا، پلن سوم برای خریدن نیست، لنگره که وسطی منطقی به نظر بیاد. ولی قبول، اگه شما رو گیج کنه، ترفندش به ضرر خودمون تموم می‌شه."
+      },
+      {
+        "advisor": "sara",
+        "target": "kiani",
+        "text": "استاد، نسخهٔ رایگان یعنی کلی کاربر که پول نمی‌دن ولی سؤال می‌پرسن. حدسی ۷۰٪ تیکت‌ها از رایگانی‌ها میاد. ما ۳ نفریم، نمی‌کشیم."
+      },
+      {
+        "advisor": "sadri",
+        "target": "donya",
+        "text": "دنیا، اعتماد رو دورهٔ آزمایشی و ضمانت برگشت پول می‌سازه، نه رایگانِ همیشگی. رایگانِ همیشگی یعنی خرج سرور و پشتیبانی، بدون یه ریال درآمد."
+      },
+      {
+        "advisor": "kiani",
+        "target": "sadri",
+        "text": "قانع شدم، رایگانِ همیشگی رو کنار می‌ذارم. ولی یه چیز رو ول نمی‌کنم: کار اصلی نباید قفل بشه. محدودیت فقط روی اضافه‌ها: کاربر بیشتر، شعبهٔ دوم، گزارش بیشتر."
+      },
+      {
+        "advisor": "donya",
+        "target": "haj",
+        "text": "حاج رضا، یه پلن با همه چی برای شما عالیه. ولی اونی که سه تا شعبه داره چرا همون پول شما رو بده؟ این به چشم مشتری ناعادلانه‌ست."
+      },
+      {
+        "advisor": "nima",
+        "target": "donya",
+        "text": "پس دو پلن: ساده و حرفه‌ای. حرفه‌ای می‌شه لنگر قیمت و ساده کنارش ارزون دیده می‌شه. پلن سوم رو خط می‌زنم."
+      },
+      {
+        "advisor": "sara",
+        "target": "nima",
+        "text": "دو پلن رو تیم می‌کشه. شرطش اینه که فرقشون تو ۵ خط جا بشه، نه یه جدول ۳۰ ردیفه. هر ردیف اضافه یعنی یه سؤال تکراری تو پشتیبانی."
+      }
+    ],
+    "votes": [
+      {
+        "advisor": "nima",
+        "pick": "D",
+        "stance": "amend",
+        "scores": {
+          "A": 4,
+          "B": 6,
+          "C": 5,
+          "D": 8
+        },
+        "note": "با یه پلن حرفه‌ای کنارش، لنگر قیمت رو هم داریم."
+      },
+      {
+        "advisor": "sadri",
+        "pick": "D",
+        "stance": "yes_if",
+        "scores": {
+          "A": 7,
+          "B": 4,
+          "C": 3,
+          "D": 8
+        },
+        "note": "به شرط سالانه با ۲ ماه تخفیف، برای نقدینگی."
+      },
+      {
+        "advisor": "haj",
+        "pick": "A",
+        "stance": "yes",
+        "scores": {
+          "A": 9,
+          "B": 2,
+          "C": 4,
+          "D": 7
+        },
+        "note": "من هنوزم می‌گم یه قیمت، تمام؛ ولی دو پلن رو تحمل می‌کنم."
+      },
+      {
+        "advisor": "sara",
+        "pick": "D",
+        "stance": "yes",
+        "scores": {
+          "A": 6,
+          "B": 3,
+          "C": 3,
+          "D": 9
+        },
+        "note": "دو پلن ساده، کمترین بار پشتیبانی."
+      },
+      {
+        "advisor": "kiani",
+        "pick": "D",
+        "stance": "yes_if",
+        "scores": {
+          "A": 5,
+          "B": 4,
+          "C": 6,
+          "D": 8
+        },
+        "note": "اگه هیچ‌وقت کار اصلی رو نبریم تو پلن گرون‌تر."
+      },
+      {
+        "advisor": "donya",
+        "pick": "D",
+        "stance": "amend",
+        "scores": {
+          "A": 4,
+          "B": 5,
+          "C": 6,
+          "D": 8
+        },
+        "note": "اسم پلن‌ها ساده و آدمیزادی باشه، نه طلایی و الماسی."
+      }
+    ],
+    "verdict": {
+      "choice": "D",
+      "headline": "دو پلن، محدودیت فقط روی اضافه‌ها",
+      "summary": "یه پلن ساده با همهٔ کارهای اصلی، و کنارش یه پلن حرفه‌ای برای اضافه‌ها مثل کاربر، شعبه و گزارش بیشتر. هر دو ماهانه و سالانه با ۲ ماه تخفیف، بدون نسخهٔ رایگان همیشگی.",
+      "reasons": [
+        {
+          "advisor": "haj",
+          "text": "سه تا پلن کاسب شلوغ رو گیج می‌کنه و خرید رو می‌ندازه به «بعداً»."
+        },
+        {
+          "advisor": "kiani",
+          "text": "قفل کردن کار اصلی آدم رو عصبانی می‌کنه؛ محدودیت روی اضافه‌ها منصفانه‌ست."
+        },
+        {
+          "advisor": "sadri",
+          "text": "سالانه با ۲ ماه تخفیف، نقدینگی ماه‌های اول رو بدون نسخهٔ رایگان تأمین می‌کنه."
+        }
+      ],
+      "watchOut": "اگه یه روز وسوسه شدیم یه کار اصلی رو ببریم تو پلن حرفه‌ای، همون روز اعتماد کاربرای پلن ساده رو از دست می‌دیم.",
+      "firstStep": "فردا یه صفحهٔ قیمت با دو ستون و حداکثر ۵ خط فرق بکشید و به ۵ تا کاسب واقعی نشون بدید؛ ببینید بدون توضیح می‌فهمن یا نه."
+    }
+  } }
+];
+const sel = $("sampleSel");
+SAMPLES.forEach(s => { const o = el("option", null, "نمونه: " + s.label); o.value = s.key; sel.append(o); });
+let lastGen = null;
+try { const g = JSON.parse(localStorage.getItem("shoora:last") || "null"); if (g && g.votes && g.options && g.openings) lastGen = g; } catch (_) {}
+function addMineOption(){ if (!sel.querySelector('option[value="mine"]')){ const o = el("option", null, "آخرین جلسهٔ من"); o.value = "mine"; sel.append(o); } }
+if (lastGen) addMineOption();
+function rememberSession(session){
+  lastGen = JSON.parse(JSON.stringify(session));
+  try { localStorage.setItem("shoora:last", JSON.stringify(session)); } catch (_) {}
+  addMineOption(); sel.value = "mine";
+}
+function loadSample(key){
+  if (key === "mine" && lastGen){ load(JSON.parse(JSON.stringify(lastGen))); return; }
+  const s = SAMPLES.find(x => x.key === key) || SAMPLES[0];
+  sel.value = s.key;
+  const d = JSON.parse(JSON.stringify(s.data)); if (!d.advisors) d.advisors = ORDER.slice();
+  load(d);
+}
+sel.addEventListener("change", () => loadSample(sel.value));
+setPlaying(false);
+// "#plans" or "#trial" in the address opens that sample
+const hashKey = (location.hash || "").slice(1);
+loadSample(SAMPLES.some(s => s.key === hashKey) ? hashKey : "trial");
+// The browser no longer needs Claude; the Render server generates sessions using GapGPT.
+})();
+</script>
+</body>
+</html>
